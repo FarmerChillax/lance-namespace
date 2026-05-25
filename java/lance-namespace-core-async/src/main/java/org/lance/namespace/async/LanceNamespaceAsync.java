@@ -356,20 +356,6 @@ public interface LanceNamespaceAsync {
   }
 
   /**
-   * Create an empty table (metadata only operation).
-   *
-   * @param request The create empty table request
-   * @return A CompletableFuture containing the create empty table response
-   * @deprecated Use {@link #declareTable(DeclareTableRequest)} instead.
-   */
-  @Deprecated
-  default CompletableFuture<CreateEmptyTableResponse> createEmptyTable(
-      CreateEmptyTableRequest request) {
-    return CompletableFuture.failedFuture(
-        new UnsupportedOperationException("Not supported: createEmptyTable"));
-  }
-
-  /**
    * Insert data into a table.
    *
    * @param request The insert into table request
@@ -683,6 +669,44 @@ public interface LanceNamespaceAsync {
       AlterTableAlterColumnsRequest request) {
     return CompletableFuture.failedFuture(
         new UnsupportedOperationException("Not supported: alterTableAlterColumns"));
+  }
+
+  /**
+   * Trigger an async backfill job for a computed column.
+   *
+   * @param request The backfill columns request
+   * @return A CompletableFuture containing the backfill columns response with a job ID
+   */
+  default CompletableFuture<AlterTableBackfillColumnsResponse> alterTableBackfillColumns(
+      AlterTableBackfillColumnsRequest request) {
+    return CompletableFuture.failedFuture(
+        new UnsupportedOperationException("Not supported: alterTableBackfillColumns"));
+  }
+
+  /**
+   * Trigger an async materialized view refresh.
+   *
+   * @param request The refresh materialized view request
+   * @return A CompletableFuture containing the refresh response with a job ID
+   */
+  default CompletableFuture<RefreshMaterializedViewResponse> refreshMaterializedView(
+      RefreshMaterializedViewRequest request) {
+    return CompletableFuture.failedFuture(
+        new UnsupportedOperationException("Not supported: refreshMaterializedView"));
+  }
+
+  /**
+   * Create a materialized view (query / UDTF / chunker) backed by a stored UDTF/chunker spec and an
+   * optional initial refresh.
+   *
+   * @param request The create materialized view request
+   * @return A CompletableFuture containing the create response with the view's location and an
+   *     optional job ID
+   */
+  default CompletableFuture<CreateMaterializedViewResponse> createMaterializedView(
+      CreateMaterializedViewRequest request) {
+    return CompletableFuture.failedFuture(
+        new UnsupportedOperationException("Not supported: createMaterializedView"));
   }
 
   /**

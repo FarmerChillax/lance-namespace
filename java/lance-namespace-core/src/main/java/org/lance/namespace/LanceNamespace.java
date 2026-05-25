@@ -338,18 +338,6 @@ public interface LanceNamespace {
   }
 
   /**
-   * Create an empty table (metadata only operation).
-   *
-   * @param request The create empty table request
-   * @return The create empty table response
-   * @deprecated Use {@link #declareTable(DeclareTableRequest)} instead.
-   */
-  @Deprecated
-  default CreateEmptyTableResponse createEmptyTable(CreateEmptyTableRequest request) {
-    throw new UnsupportedOperationException("Not supported: createEmptyTable");
-  }
-
-  /**
    * Insert data into a table.
    *
    * @param request The insert into table request
@@ -656,6 +644,40 @@ public interface LanceNamespace {
   default AlterTableAlterColumnsResponse alterTableAlterColumns(
       AlterTableAlterColumnsRequest request) {
     throw new UnsupportedOperationException("Not supported: alterTableAlterColumns");
+  }
+
+  /**
+   * Trigger an async backfill job for a computed column.
+   *
+   * @param request The backfill columns request
+   * @return The backfill columns response containing a job ID
+   */
+  default AlterTableBackfillColumnsResponse alterTableBackfillColumns(
+      AlterTableBackfillColumnsRequest request) {
+    throw new UnsupportedOperationException("Not supported: alterTableBackfillColumns");
+  }
+
+  /**
+   * Trigger an async materialized view refresh.
+   *
+   * @param request The refresh materialized view request
+   * @return The refresh response containing a job ID
+   */
+  default RefreshMaterializedViewResponse refreshMaterializedView(
+      RefreshMaterializedViewRequest request) {
+    throw new UnsupportedOperationException("Not supported: refreshMaterializedView");
+  }
+
+  /**
+   * Create a materialized view (query / UDTF / chunker) backed by a stored UDTF/chunker spec and an
+   * optional initial refresh.
+   *
+   * @param request The create materialized view request
+   * @return The create response containing the view's location and an optional job ID
+   */
+  default CreateMaterializedViewResponse createMaterializedView(
+      CreateMaterializedViewRequest request) {
+    throw new UnsupportedOperationException("Not supported: createMaterializedView");
   }
 
   /**

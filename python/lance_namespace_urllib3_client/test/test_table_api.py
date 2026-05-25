@@ -40,6 +40,13 @@ class TestTableApi(unittest.TestCase):
         """
         pass
 
+    def test_alter_table_backfill_columns(self) -> None:
+        """Test case for alter_table_backfill_columns
+
+        Trigger an async column backfill job
+        """
+        pass
+
     def test_alter_table_drop_columns(self) -> None:
         """Test case for alter_table_drop_columns
 
@@ -79,13 +86,6 @@ class TestTableApi(unittest.TestCase):
         """Test case for count_table_rows
 
         Count rows in a table
-        """
-        pass
-
-    def test_create_empty_table(self) -> None:
-        """Test case for create_empty_table
-
-        Create an empty table
         """
         pass
 

@@ -21,9 +21,7 @@ import jakarta.validation.constraints.*;
 
 import java.util.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /** AlterTableAlterColumnsRequest */
@@ -33,8 +31,6 @@ import java.util.Objects;
 public class AlterTableAlterColumnsRequest {
 
   private Identity identity;
-
-  @Valid private Map<String, String> context = new HashMap<>();
 
   @Valid private List<String> id = new ArrayList<>();
 
@@ -70,41 +66,6 @@ public class AlterTableAlterColumnsRequest {
     this.identity = identity;
   }
 
-  public AlterTableAlterColumnsRequest context(Map<String, String> context) {
-    this.context = context;
-    return this;
-  }
-
-  public AlterTableAlterColumnsRequest putContextItem(String key, String contextItem) {
-    if (this.context == null) {
-      this.context = new HashMap<>();
-    }
-    this.context.put(key, contextItem);
-    return this;
-  }
-
-  /**
-   * Arbitrary context for a request as key-value pairs. How to use the context is custom to the
-   * specific implementation. REST NAMESPACE ONLY Context entries are passed via HTTP headers using
-   * the naming convention `x-lance-ctx-<key>: <value>`. For example, a context entry
-   * `{\"trace_id\": \"abc123\"}` would be sent as the header `x-lance-ctx-trace_id: abc123`.
-   *
-   * @return context
-   */
-  @Schema(
-      name = "context",
-      description =
-          "Arbitrary context for a request as key-value pairs. How to use the context is custom to the specific implementation.  REST NAMESPACE ONLY Context entries are passed via HTTP headers using the naming convention `x-lance-ctx-<key>: <value>`. For example, a context entry `{\"trace_id\": \"abc123\"}` would be sent as the header `x-lance-ctx-trace_id: abc123`. ",
-      requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("context")
-  public Map<String, String> getContext() {
-    return context;
-  }
-
-  public void setContext(Map<String, String> context) {
-    this.context = context;
-  }
-
   public AlterTableAlterColumnsRequest id(List<String> id) {
     this.id = id;
     return this;
@@ -119,11 +80,14 @@ public class AlterTableAlterColumnsRequest {
   }
 
   /**
-   * Get id
+   * Table identifier path (namespace + table name)
    *
    * @return id
    */
-  @Schema(name = "id", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @Schema(
+      name = "id",
+      description = "Table identifier path (namespace + table name)",
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("id")
   public List<String> getId() {
     return id;
@@ -147,7 +111,7 @@ public class AlterTableAlterColumnsRequest {
   }
 
   /**
-   * List of column alterations to perform
+   * List of column alterations to apply to the table
    *
    * @return alterations
    */
@@ -155,7 +119,7 @@ public class AlterTableAlterColumnsRequest {
   @Valid
   @Schema(
       name = "alterations",
-      description = "List of column alterations to perform",
+      description = "List of column alterations to apply to the table",
       requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("alterations")
   public List<@Valid AlterColumnsEntry> getAlterations() {
@@ -176,14 +140,13 @@ public class AlterTableAlterColumnsRequest {
     }
     AlterTableAlterColumnsRequest alterTableAlterColumnsRequest = (AlterTableAlterColumnsRequest) o;
     return Objects.equals(this.identity, alterTableAlterColumnsRequest.identity)
-        && Objects.equals(this.context, alterTableAlterColumnsRequest.context)
         && Objects.equals(this.id, alterTableAlterColumnsRequest.id)
         && Objects.equals(this.alterations, alterTableAlterColumnsRequest.alterations);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(identity, context, id, alterations);
+    return Objects.hash(identity, id, alterations);
   }
 
   @Override
@@ -191,7 +154,6 @@ public class AlterTableAlterColumnsRequest {
     StringBuilder sb = new StringBuilder();
     sb.append("class AlterTableAlterColumnsRequest {\n");
     sb.append("    identity: ").append(toIndentedString(identity)).append("\n");
-    sb.append("    context: ").append(toIndentedString(context)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    alterations: ").append(toIndentedString(alterations)).append("\n");
     sb.append("}");

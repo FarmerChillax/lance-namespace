@@ -51,7 +51,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>org.lance</groupId>
   <artifactId>lance-namespace-apache-client</artifactId>
-  <version>0.6.1</version>
+  <version>0.7.7</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -61,7 +61,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "org.lance:lance-namespace-apache-client:0.6.1"
+compile "org.lance:lance-namespace-apache-client:0.7.7"
 ```
 
 ### Others
@@ -74,7 +74,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/lance-namespace-apache-client-0.6.1.jar`
+- `target/lance-namespace-apache-client-0.7.7.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -134,27 +134,31 @@ All URIs are relative to *http://localhost:2333*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *DataApi* | [**alterTableAddColumns**](docs/DataApi.md#alterTableAddColumns) | **POST** /v1/table/{id}/add_columns | Add new columns to table schema
+*DataApi* | [**alterTableBackfillColumns**](docs/DataApi.md#alterTableBackfillColumns) | **POST** /v1/table/{id}/backfill_column | Trigger an async column backfill job
 *DataApi* | [**analyzeTableQueryPlan**](docs/DataApi.md#analyzeTableQueryPlan) | **POST** /v1/table/{id}/analyze_plan | Analyze query execution plan
 *DataApi* | [**countTableRows**](docs/DataApi.md#countTableRows) | **POST** /v1/table/{id}/count_rows | Count rows in a table
+*DataApi* | [**createMaterializedView**](docs/DataApi.md#createMaterializedView) | **POST** /v1/materialized_view/{id}/create | Create a materialized view
 *DataApi* | [**createTable**](docs/DataApi.md#createTable) | **POST** /v1/table/{id}/create | Create a table with the given name
 *DataApi* | [**deleteFromTable**](docs/DataApi.md#deleteFromTable) | **POST** /v1/table/{id}/delete | Delete rows from a table
 *DataApi* | [**explainTableQueryPlan**](docs/DataApi.md#explainTableQueryPlan) | **POST** /v1/table/{id}/explain_plan | Get query execution plan explanation
 *DataApi* | [**insertIntoTable**](docs/DataApi.md#insertIntoTable) | **POST** /v1/table/{id}/insert | Insert records into a table
 *DataApi* | [**mergeInsertIntoTable**](docs/DataApi.md#mergeInsertIntoTable) | **POST** /v1/table/{id}/merge_insert | Merge insert (upsert) records into a table
 *DataApi* | [**queryTable**](docs/DataApi.md#queryTable) | **POST** /v1/table/{id}/query | Query a table
+*DataApi* | [**refreshMaterializedView**](docs/DataApi.md#refreshMaterializedView) | **POST** /v1/materialized_view/{id}/refresh | Trigger an async materialized view refresh
 *DataApi* | [**updateTable**](docs/DataApi.md#updateTable) | **POST** /v1/table/{id}/update | Update rows in a table
 *IndexApi* | [**createTableIndex**](docs/IndexApi.md#createTableIndex) | **POST** /v1/table/{id}/create_index | Create an index on a table
 *IndexApi* | [**createTableScalarIndex**](docs/IndexApi.md#createTableScalarIndex) | **POST** /v1/table/{id}/create_scalar_index | Create a scalar index on a table
 *IndexApi* | [**describeTableIndexStats**](docs/IndexApi.md#describeTableIndexStats) | **POST** /v1/table/{id}/index/{index_name}/stats | Get table index statistics
 *IndexApi* | [**dropTableIndex**](docs/IndexApi.md#dropTableIndex) | **POST** /v1/table/{id}/index/{index_name}/drop | Drop a specific index
 *IndexApi* | [**listTableIndices**](docs/IndexApi.md#listTableIndices) | **POST** /v1/table/{id}/index/list | List indexes on a table
+*MaterializedViewApi* | [**createMaterializedView**](docs/MaterializedViewApi.md#createMaterializedView) | **POST** /v1/materialized_view/{id}/create | Create a materialized view
+*MaterializedViewApi* | [**refreshMaterializedView**](docs/MaterializedViewApi.md#refreshMaterializedView) | **POST** /v1/materialized_view/{id}/refresh | Trigger an async materialized view refresh
 *MetadataApi* | [**alterTableAlterColumns**](docs/MetadataApi.md#alterTableAlterColumns) | **POST** /v1/table/{id}/alter_columns | Modify existing columns
 *MetadataApi* | [**alterTableDropColumns**](docs/MetadataApi.md#alterTableDropColumns) | **POST** /v1/table/{id}/drop_columns | Remove columns from table
 *MetadataApi* | [**alterTransaction**](docs/MetadataApi.md#alterTransaction) | **POST** /v1/transaction/{id}/alter | Alter information of a transaction.
 *MetadataApi* | [**batchCommitTables**](docs/MetadataApi.md#batchCommitTables) | **POST** /v1/table/batch-commit | Atomically commit a batch of mixed table operations
 *MetadataApi* | [**batchCreateTableVersions**](docs/MetadataApi.md#batchCreateTableVersions) | **POST** /v1/table/version/batch-create | Atomically create versions for multiple tables
 *MetadataApi* | [**batchDeleteTableVersions**](docs/MetadataApi.md#batchDeleteTableVersions) | **POST** /v1/table/{id}/version/delete | Delete table version records
-*MetadataApi* | [**createEmptyTable**](docs/MetadataApi.md#createEmptyTable) | **POST** /v1/table/{id}/create-empty | Create an empty table
 *MetadataApi* | [**createNamespace**](docs/MetadataApi.md#createNamespace) | **POST** /v1/namespace/{id}/create | Create a new namespace
 *MetadataApi* | [**createTableIndex**](docs/MetadataApi.md#createTableIndex) | **POST** /v1/table/{id}/create_index | Create an index on a table
 *MetadataApi* | [**createTableScalarIndex**](docs/MetadataApi.md#createTableScalarIndex) | **POST** /v1/table/{id}/create_scalar_index | Create a scalar index on a table
@@ -193,13 +197,13 @@ Class | Method | HTTP request | Description
 *NamespaceApi* | [**namespaceExists**](docs/NamespaceApi.md#namespaceExists) | **POST** /v1/namespace/{id}/exists | Check if a namespace exists
 *TableApi* | [**alterTableAddColumns**](docs/TableApi.md#alterTableAddColumns) | **POST** /v1/table/{id}/add_columns | Add new columns to table schema
 *TableApi* | [**alterTableAlterColumns**](docs/TableApi.md#alterTableAlterColumns) | **POST** /v1/table/{id}/alter_columns | Modify existing columns
+*TableApi* | [**alterTableBackfillColumns**](docs/TableApi.md#alterTableBackfillColumns) | **POST** /v1/table/{id}/backfill_column | Trigger an async column backfill job
 *TableApi* | [**alterTableDropColumns**](docs/TableApi.md#alterTableDropColumns) | **POST** /v1/table/{id}/drop_columns | Remove columns from table
 *TableApi* | [**analyzeTableQueryPlan**](docs/TableApi.md#analyzeTableQueryPlan) | **POST** /v1/table/{id}/analyze_plan | Analyze query execution plan
 *TableApi* | [**batchCommitTables**](docs/TableApi.md#batchCommitTables) | **POST** /v1/table/batch-commit | Atomically commit a batch of mixed table operations
 *TableApi* | [**batchCreateTableVersions**](docs/TableApi.md#batchCreateTableVersions) | **POST** /v1/table/version/batch-create | Atomically create versions for multiple tables
 *TableApi* | [**batchDeleteTableVersions**](docs/TableApi.md#batchDeleteTableVersions) | **POST** /v1/table/{id}/version/delete | Delete table version records
 *TableApi* | [**countTableRows**](docs/TableApi.md#countTableRows) | **POST** /v1/table/{id}/count_rows | Count rows in a table
-*TableApi* | [**createEmptyTable**](docs/TableApi.md#createEmptyTable) | **POST** /v1/table/{id}/create-empty | Create an empty table
 *TableApi* | [**createTable**](docs/TableApi.md#createTable) | **POST** /v1/table/{id}/create | Create a table with the given name
 *TableApi* | [**createTableIndex**](docs/TableApi.md#createTableIndex) | **POST** /v1/table/{id}/create_index | Create an index on a table
 *TableApi* | [**createTableScalarIndex**](docs/TableApi.md#createTableScalarIndex) | **POST** /v1/table/{id}/create_scalar_index | Create a scalar index on a table
@@ -244,12 +248,15 @@ Class | Method | HTTP request | Description
 
 ## Documentation for Models
 
+ - [AddColumnsEntry](docs/AddColumnsEntry.md)
  - [AddVirtualColumnEntry](docs/AddVirtualColumnEntry.md)
  - [AlterColumnsEntry](docs/AlterColumnsEntry.md)
  - [AlterTableAddColumnsRequest](docs/AlterTableAddColumnsRequest.md)
  - [AlterTableAddColumnsResponse](docs/AlterTableAddColumnsResponse.md)
  - [AlterTableAlterColumnsRequest](docs/AlterTableAlterColumnsRequest.md)
  - [AlterTableAlterColumnsResponse](docs/AlterTableAlterColumnsResponse.md)
+ - [AlterTableBackfillColumnsRequest](docs/AlterTableBackfillColumnsRequest.md)
+ - [AlterTableBackfillColumnsResponse](docs/AlterTableBackfillColumnsResponse.md)
  - [AlterTableDropColumnsRequest](docs/AlterTableDropColumnsRequest.md)
  - [AlterTableDropColumnsResponse](docs/AlterTableDropColumnsResponse.md)
  - [AlterTransactionAction](docs/AlterTransactionAction.md)
@@ -272,8 +279,8 @@ Class | Method | HTTP request | Description
  - [CommitTableOperation](docs/CommitTableOperation.md)
  - [CommitTableResult](docs/CommitTableResult.md)
  - [CountTableRowsRequest](docs/CountTableRowsRequest.md)
- - [CreateEmptyTableRequest](docs/CreateEmptyTableRequest.md)
- - [CreateEmptyTableResponse](docs/CreateEmptyTableResponse.md)
+ - [CreateMaterializedViewRequest](docs/CreateMaterializedViewRequest.md)
+ - [CreateMaterializedViewResponse](docs/CreateMaterializedViewResponse.md)
  - [CreateNamespaceRequest](docs/CreateNamespaceRequest.md)
  - [CreateNamespaceResponse](docs/CreateNamespaceResponse.md)
  - [CreateTableIndexRequest](docs/CreateTableIndexRequest.md)
@@ -338,11 +345,11 @@ Class | Method | HTTP request | Description
  - [ListTablesRequest](docs/ListTablesRequest.md)
  - [ListTablesResponse](docs/ListTablesResponse.md)
  - [MatchQuery](docs/MatchQuery.md)
+ - [MaterializedViewUdtfEntry](docs/MaterializedViewUdtfEntry.md)
  - [MergeInsertIntoTableRequest](docs/MergeInsertIntoTableRequest.md)
  - [MergeInsertIntoTableResponse](docs/MergeInsertIntoTableResponse.md)
  - [MultiMatchQuery](docs/MultiMatchQuery.md)
  - [NamespaceExistsRequest](docs/NamespaceExistsRequest.md)
- - [NewColumnTransform](docs/NewColumnTransform.md)
  - [PartitionField](docs/PartitionField.md)
  - [PartitionSpec](docs/PartitionSpec.md)
  - [PartitionTransform](docs/PartitionTransform.md)
@@ -351,6 +358,8 @@ Class | Method | HTTP request | Description
  - [QueryTableRequestColumns](docs/QueryTableRequestColumns.md)
  - [QueryTableRequestFullTextQuery](docs/QueryTableRequestFullTextQuery.md)
  - [QueryTableRequestVector](docs/QueryTableRequestVector.md)
+ - [RefreshMaterializedViewRequest](docs/RefreshMaterializedViewRequest.md)
+ - [RefreshMaterializedViewResponse](docs/RefreshMaterializedViewResponse.md)
  - [RegisterTableRequest](docs/RegisterTableRequest.md)
  - [RegisterTableResponse](docs/RegisterTableResponse.md)
  - [RenameTableRequest](docs/RenameTableRequest.md)

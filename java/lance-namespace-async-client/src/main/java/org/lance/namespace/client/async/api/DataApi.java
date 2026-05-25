@@ -20,8 +20,12 @@ import org.lance.namespace.client.async.Configuration;
 import org.lance.namespace.client.async.Pair;
 import org.lance.namespace.model.AlterTableAddColumnsRequest;
 import org.lance.namespace.model.AlterTableAddColumnsResponse;
+import org.lance.namespace.model.AlterTableBackfillColumnsRequest;
+import org.lance.namespace.model.AlterTableBackfillColumnsResponse;
 import org.lance.namespace.model.AnalyzeTableQueryPlanRequest;
 import org.lance.namespace.model.CountTableRowsRequest;
+import org.lance.namespace.model.CreateMaterializedViewRequest;
+import org.lance.namespace.model.CreateMaterializedViewResponse;
 import org.lance.namespace.model.CreateTableResponse;
 import org.lance.namespace.model.DeleteFromTableRequest;
 import org.lance.namespace.model.DeleteFromTableResponse;
@@ -29,6 +33,8 @@ import org.lance.namespace.model.ExplainTableQueryPlanRequest;
 import org.lance.namespace.model.InsertIntoTableResponse;
 import org.lance.namespace.model.MergeInsertIntoTableResponse;
 import org.lance.namespace.model.QueryTableRequest;
+import org.lance.namespace.model.RefreshMaterializedViewRequest;
+import org.lance.namespace.model.RefreshMaterializedViewResponse;
 import org.lance.namespace.model.UpdateTableRequest;
 import org.lance.namespace.model.UpdateTableResponse;
 
@@ -228,6 +234,171 @@ public class DataApi {
     try {
       byte[] localVarPostBody =
           memberVarObjectMapper.writeValueAsBytes(alterTableAddColumnsRequest);
+      localVarRequestBuilder.method(
+          "POST", HttpRequest.BodyPublishers.ofByteArray(localVarPostBody));
+    } catch (IOException e) {
+      throw new ApiException(e);
+    }
+    if (memberVarReadTimeout != null) {
+      localVarRequestBuilder.timeout(memberVarReadTimeout);
+    }
+    if (memberVarInterceptor != null) {
+      memberVarInterceptor.accept(localVarRequestBuilder);
+    }
+    return localVarRequestBuilder;
+  }
+
+  /**
+   * Trigger an async column backfill job Trigger an asynchronous backfill job for a computed column
+   * on table &#x60;id&#x60;. The column must be a virtual (UDF-backed) column. Returns a job ID for
+   * tracking.
+   *
+   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
+   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
+   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
+   *     root namespace. (required)
+   * @param alterTableBackfillColumnsRequest (required)
+   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
+   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
+   *     (optional)
+   * @return CompletableFuture&lt;AlterTableBackfillColumnsResponse&gt;
+   * @throws ApiException if fails to make API call
+   */
+  public CompletableFuture<AlterTableBackfillColumnsResponse> alterTableBackfillColumns(
+      String id,
+      AlterTableBackfillColumnsRequest alterTableBackfillColumnsRequest,
+      String delimiter)
+      throws ApiException {
+    try {
+      HttpRequest.Builder localVarRequestBuilder =
+          alterTableBackfillColumnsRequestBuilder(id, alterTableBackfillColumnsRequest, delimiter);
+      return memberVarHttpClient
+          .sendAsync(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofString())
+          .thenComposeAsync(
+              localVarResponse -> {
+                if (localVarResponse.statusCode() / 100 != 2) {
+                  return CompletableFuture.failedFuture(
+                      getApiException("alterTableBackfillColumns", localVarResponse));
+                }
+                try {
+                  String responseBody = localVarResponse.body();
+                  return CompletableFuture.completedFuture(
+                      responseBody == null || responseBody.isBlank()
+                          ? null
+                          : memberVarObjectMapper.readValue(
+                              responseBody,
+                              new TypeReference<AlterTableBackfillColumnsResponse>() {}));
+                } catch (IOException e) {
+                  return CompletableFuture.failedFuture(new ApiException(e));
+                }
+              });
+    } catch (ApiException e) {
+      return CompletableFuture.failedFuture(e);
+    }
+  }
+
+  /**
+   * Trigger an async column backfill job Trigger an asynchronous backfill job for a computed column
+   * on table &#x60;id&#x60;. The column must be a virtual (UDF-backed) column. Returns a job ID for
+   * tracking.
+   *
+   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
+   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
+   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
+   *     root namespace. (required)
+   * @param alterTableBackfillColumnsRequest (required)
+   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
+   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
+   *     (optional)
+   * @return CompletableFuture&lt;ApiResponse&lt;AlterTableBackfillColumnsResponse&gt;&gt;
+   * @throws ApiException if fails to make API call
+   */
+  public CompletableFuture<ApiResponse<AlterTableBackfillColumnsResponse>>
+      alterTableBackfillColumnsWithHttpInfo(
+          String id,
+          AlterTableBackfillColumnsRequest alterTableBackfillColumnsRequest,
+          String delimiter)
+          throws ApiException {
+    try {
+      HttpRequest.Builder localVarRequestBuilder =
+          alterTableBackfillColumnsRequestBuilder(id, alterTableBackfillColumnsRequest, delimiter);
+      return memberVarHttpClient
+          .sendAsync(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofString())
+          .thenComposeAsync(
+              localVarResponse -> {
+                if (memberVarAsyncResponseInterceptor != null) {
+                  memberVarAsyncResponseInterceptor.accept(localVarResponse);
+                }
+                if (localVarResponse.statusCode() / 100 != 2) {
+                  return CompletableFuture.failedFuture(
+                      getApiException("alterTableBackfillColumns", localVarResponse));
+                }
+                try {
+                  String responseBody = localVarResponse.body();
+                  return CompletableFuture.completedFuture(
+                      new ApiResponse<AlterTableBackfillColumnsResponse>(
+                          localVarResponse.statusCode(),
+                          localVarResponse.headers().map(),
+                          responseBody == null || responseBody.isBlank()
+                              ? null
+                              : memberVarObjectMapper.readValue(
+                                  responseBody,
+                                  new TypeReference<AlterTableBackfillColumnsResponse>() {})));
+                } catch (IOException e) {
+                  return CompletableFuture.failedFuture(new ApiException(e));
+                }
+              });
+    } catch (ApiException e) {
+      return CompletableFuture.failedFuture(e);
+    }
+  }
+
+  private HttpRequest.Builder alterTableBackfillColumnsRequestBuilder(
+      String id,
+      AlterTableBackfillColumnsRequest alterTableBackfillColumnsRequest,
+      String delimiter)
+      throws ApiException {
+    // verify the required parameter 'id' is set
+    if (id == null) {
+      throw new ApiException(
+          400, "Missing the required parameter 'id' when calling alterTableBackfillColumns");
+    }
+    // verify the required parameter 'alterTableBackfillColumnsRequest' is set
+    if (alterTableBackfillColumnsRequest == null) {
+      throw new ApiException(
+          400,
+          "Missing the required parameter 'alterTableBackfillColumnsRequest' when calling alterTableBackfillColumns");
+    }
+
+    HttpRequest.Builder localVarRequestBuilder = HttpRequest.newBuilder();
+
+    String localVarPath =
+        "/v1/table/{id}/backfill_column".replace("{id}", ApiClient.urlEncode(id.toString()));
+
+    List<Pair> localVarQueryParams = new ArrayList<>();
+    StringJoiner localVarQueryStringJoiner = new StringJoiner("&");
+    String localVarQueryParameterBaseName;
+    localVarQueryParameterBaseName = "delimiter";
+    localVarQueryParams.addAll(ApiClient.parameterToPairs("delimiter", delimiter));
+
+    if (!localVarQueryParams.isEmpty() || localVarQueryStringJoiner.length() != 0) {
+      StringJoiner queryJoiner = new StringJoiner("&");
+      localVarQueryParams.forEach(p -> queryJoiner.add(p.getName() + '=' + p.getValue()));
+      if (localVarQueryStringJoiner.length() != 0) {
+        queryJoiner.add(localVarQueryStringJoiner.toString());
+      }
+      localVarRequestBuilder.uri(
+          URI.create(memberVarBaseUri + localVarPath + '?' + queryJoiner.toString()));
+    } else {
+      localVarRequestBuilder.uri(URI.create(memberVarBaseUri + localVarPath));
+    }
+
+    localVarRequestBuilder.header("Content-Type", "application/json");
+    localVarRequestBuilder.header("Accept", "application/json");
+
+    try {
+      byte[] localVarPostBody =
+          memberVarObjectMapper.writeValueAsBytes(alterTableBackfillColumnsRequest);
       localVarRequestBuilder.method(
           "POST", HttpRequest.BodyPublishers.ofByteArray(localVarPostBody));
     } catch (IOException e) {
@@ -556,12 +727,178 @@ public class DataApi {
   }
 
   /**
+   * Create a materialized view Create a materialized view at identifier &#x60;id&#x60;. The view
+   * may be query-backed, UDTF-backed, or chunker-backed, controlled by the &#x60;kind&#x60;
+   * discriminator.
+   *
+   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
+   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
+   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
+   *     root namespace. (required)
+   * @param createMaterializedViewRequest (required)
+   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
+   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
+   *     (optional)
+   * @return CompletableFuture&lt;CreateMaterializedViewResponse&gt;
+   * @throws ApiException if fails to make API call
+   */
+  public CompletableFuture<CreateMaterializedViewResponse> createMaterializedView(
+      String id, CreateMaterializedViewRequest createMaterializedViewRequest, String delimiter)
+      throws ApiException {
+    try {
+      HttpRequest.Builder localVarRequestBuilder =
+          createMaterializedViewRequestBuilder(id, createMaterializedViewRequest, delimiter);
+      return memberVarHttpClient
+          .sendAsync(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofString())
+          .thenComposeAsync(
+              localVarResponse -> {
+                if (localVarResponse.statusCode() / 100 != 2) {
+                  return CompletableFuture.failedFuture(
+                      getApiException("createMaterializedView", localVarResponse));
+                }
+                try {
+                  String responseBody = localVarResponse.body();
+                  return CompletableFuture.completedFuture(
+                      responseBody == null || responseBody.isBlank()
+                          ? null
+                          : memberVarObjectMapper.readValue(
+                              responseBody,
+                              new TypeReference<CreateMaterializedViewResponse>() {}));
+                } catch (IOException e) {
+                  return CompletableFuture.failedFuture(new ApiException(e));
+                }
+              });
+    } catch (ApiException e) {
+      return CompletableFuture.failedFuture(e);
+    }
+  }
+
+  /**
+   * Create a materialized view Create a materialized view at identifier &#x60;id&#x60;. The view
+   * may be query-backed, UDTF-backed, or chunker-backed, controlled by the &#x60;kind&#x60;
+   * discriminator.
+   *
+   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
+   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
+   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
+   *     root namespace. (required)
+   * @param createMaterializedViewRequest (required)
+   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
+   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
+   *     (optional)
+   * @return CompletableFuture&lt;ApiResponse&lt;CreateMaterializedViewResponse&gt;&gt;
+   * @throws ApiException if fails to make API call
+   */
+  public CompletableFuture<ApiResponse<CreateMaterializedViewResponse>>
+      createMaterializedViewWithHttpInfo(
+          String id, CreateMaterializedViewRequest createMaterializedViewRequest, String delimiter)
+          throws ApiException {
+    try {
+      HttpRequest.Builder localVarRequestBuilder =
+          createMaterializedViewRequestBuilder(id, createMaterializedViewRequest, delimiter);
+      return memberVarHttpClient
+          .sendAsync(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofString())
+          .thenComposeAsync(
+              localVarResponse -> {
+                if (memberVarAsyncResponseInterceptor != null) {
+                  memberVarAsyncResponseInterceptor.accept(localVarResponse);
+                }
+                if (localVarResponse.statusCode() / 100 != 2) {
+                  return CompletableFuture.failedFuture(
+                      getApiException("createMaterializedView", localVarResponse));
+                }
+                try {
+                  String responseBody = localVarResponse.body();
+                  return CompletableFuture.completedFuture(
+                      new ApiResponse<CreateMaterializedViewResponse>(
+                          localVarResponse.statusCode(),
+                          localVarResponse.headers().map(),
+                          responseBody == null || responseBody.isBlank()
+                              ? null
+                              : memberVarObjectMapper.readValue(
+                                  responseBody,
+                                  new TypeReference<CreateMaterializedViewResponse>() {})));
+                } catch (IOException e) {
+                  return CompletableFuture.failedFuture(new ApiException(e));
+                }
+              });
+    } catch (ApiException e) {
+      return CompletableFuture.failedFuture(e);
+    }
+  }
+
+  private HttpRequest.Builder createMaterializedViewRequestBuilder(
+      String id, CreateMaterializedViewRequest createMaterializedViewRequest, String delimiter)
+      throws ApiException {
+    // verify the required parameter 'id' is set
+    if (id == null) {
+      throw new ApiException(
+          400, "Missing the required parameter 'id' when calling createMaterializedView");
+    }
+    // verify the required parameter 'createMaterializedViewRequest' is set
+    if (createMaterializedViewRequest == null) {
+      throw new ApiException(
+          400,
+          "Missing the required parameter 'createMaterializedViewRequest' when calling createMaterializedView");
+    }
+
+    HttpRequest.Builder localVarRequestBuilder = HttpRequest.newBuilder();
+
+    String localVarPath =
+        "/v1/materialized_view/{id}/create".replace("{id}", ApiClient.urlEncode(id.toString()));
+
+    List<Pair> localVarQueryParams = new ArrayList<>();
+    StringJoiner localVarQueryStringJoiner = new StringJoiner("&");
+    String localVarQueryParameterBaseName;
+    localVarQueryParameterBaseName = "delimiter";
+    localVarQueryParams.addAll(ApiClient.parameterToPairs("delimiter", delimiter));
+
+    if (!localVarQueryParams.isEmpty() || localVarQueryStringJoiner.length() != 0) {
+      StringJoiner queryJoiner = new StringJoiner("&");
+      localVarQueryParams.forEach(p -> queryJoiner.add(p.getName() + '=' + p.getValue()));
+      if (localVarQueryStringJoiner.length() != 0) {
+        queryJoiner.add(localVarQueryStringJoiner.toString());
+      }
+      localVarRequestBuilder.uri(
+          URI.create(memberVarBaseUri + localVarPath + '?' + queryJoiner.toString()));
+    } else {
+      localVarRequestBuilder.uri(URI.create(memberVarBaseUri + localVarPath));
+    }
+
+    localVarRequestBuilder.header("Content-Type", "application/json");
+    localVarRequestBuilder.header("Accept", "application/json");
+
+    try {
+      byte[] localVarPostBody =
+          memberVarObjectMapper.writeValueAsBytes(createMaterializedViewRequest);
+      localVarRequestBuilder.method(
+          "POST", HttpRequest.BodyPublishers.ofByteArray(localVarPostBody));
+    } catch (IOException e) {
+      throw new ApiException(e);
+    }
+    if (memberVarReadTimeout != null) {
+      localVarRequestBuilder.timeout(memberVarReadTimeout);
+    }
+    if (memberVarInterceptor != null) {
+      memberVarInterceptor.accept(localVarRequestBuilder);
+    }
+    return localVarRequestBuilder;
+  }
+
+  /**
    * Create a table with the given name Create table &#x60;id&#x60; in the namespace with the given
    * data in Arrow IPC stream. The schema of the Arrow IPC stream is used as the table schema. If
    * the stream is empty, the API creates a new empty table. REST NAMESPACE ONLY REST namespace uses
    * Arrow IPC stream as the request body. It passes in the &#x60;CreateTableRequest&#x60;
    * information in the following way: - &#x60;id&#x60;: pass through path parameter of the same
-   * name - &#x60;mode&#x60;: pass through query parameter of the same name
+   * name - &#x60;mode&#x60;: pass through query parameter of the same name -
+   * &#x60;properties&#x60;: serialize as a single JSON-encoded query parameter such as
+   * &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;;
+   * these are business logic properties managed by the namespace implementation outside Lance
+   * context - &#x60;storage_options&#x60;: serialize as a single JSON-encoded query parameter such
+   * as
+   * &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;;
+   * these configure write-time overrides for data and metadata written during table creation
    *
    * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
@@ -572,14 +909,29 @@ public class DataApi {
    *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
    *     (optional)
    * @param mode (optional)
+   * @param properties Business logic properties managed by the namespace implementation outside
+   *     Lance context. The map is translated to a single JSON-encoded query parameter such as
+   *     &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;.
+   *     (optional)
+   * @param storageOptions Storage options that configure overrides for writing table data and
+   *     metadata during table creation. These are passed to Lance for the write path. The map is
+   *     translated to a single JSON-encoded query parameter such as
+   *     &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;.
+   *     (optional)
    * @return CompletableFuture&lt;CreateTableResponse&gt;
    * @throws ApiException if fails to make API call
    */
   public CompletableFuture<CreateTableResponse> createTable(
-      String id, byte[] body, String delimiter, String mode) throws ApiException {
+      String id,
+      byte[] body,
+      String delimiter,
+      String mode,
+      String properties,
+      String storageOptions)
+      throws ApiException {
     try {
       HttpRequest.Builder localVarRequestBuilder =
-          createTableRequestBuilder(id, body, delimiter, mode);
+          createTableRequestBuilder(id, body, delimiter, mode, properties, storageOptions);
       return memberVarHttpClient
           .sendAsync(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofString())
           .thenComposeAsync(
@@ -610,7 +962,14 @@ public class DataApi {
    * the stream is empty, the API creates a new empty table. REST NAMESPACE ONLY REST namespace uses
    * Arrow IPC stream as the request body. It passes in the &#x60;CreateTableRequest&#x60;
    * information in the following way: - &#x60;id&#x60;: pass through path parameter of the same
-   * name - &#x60;mode&#x60;: pass through query parameter of the same name
+   * name - &#x60;mode&#x60;: pass through query parameter of the same name -
+   * &#x60;properties&#x60;: serialize as a single JSON-encoded query parameter such as
+   * &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;;
+   * these are business logic properties managed by the namespace implementation outside Lance
+   * context - &#x60;storage_options&#x60;: serialize as a single JSON-encoded query parameter such
+   * as
+   * &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;;
+   * these configure write-time overrides for data and metadata written during table creation
    *
    * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
@@ -621,14 +980,29 @@ public class DataApi {
    *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
    *     (optional)
    * @param mode (optional)
+   * @param properties Business logic properties managed by the namespace implementation outside
+   *     Lance context. The map is translated to a single JSON-encoded query parameter such as
+   *     &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;.
+   *     (optional)
+   * @param storageOptions Storage options that configure overrides for writing table data and
+   *     metadata during table creation. These are passed to Lance for the write path. The map is
+   *     translated to a single JSON-encoded query parameter such as
+   *     &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;.
+   *     (optional)
    * @return CompletableFuture&lt;ApiResponse&lt;CreateTableResponse&gt;&gt;
    * @throws ApiException if fails to make API call
    */
   public CompletableFuture<ApiResponse<CreateTableResponse>> createTableWithHttpInfo(
-      String id, byte[] body, String delimiter, String mode) throws ApiException {
+      String id,
+      byte[] body,
+      String delimiter,
+      String mode,
+      String properties,
+      String storageOptions)
+      throws ApiException {
     try {
       HttpRequest.Builder localVarRequestBuilder =
-          createTableRequestBuilder(id, body, delimiter, mode);
+          createTableRequestBuilder(id, body, delimiter, mode, properties, storageOptions);
       return memberVarHttpClient
           .sendAsync(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofString())
           .thenComposeAsync(
@@ -660,7 +1034,13 @@ public class DataApi {
   }
 
   private HttpRequest.Builder createTableRequestBuilder(
-      String id, byte[] body, String delimiter, String mode) throws ApiException {
+      String id,
+      byte[] body,
+      String delimiter,
+      String mode,
+      String properties,
+      String storageOptions)
+      throws ApiException {
     // verify the required parameter 'id' is set
     if (id == null) {
       throw new ApiException(400, "Missing the required parameter 'id' when calling createTable");
@@ -682,6 +1062,10 @@ public class DataApi {
     localVarQueryParams.addAll(ApiClient.parameterToPairs("delimiter", delimiter));
     localVarQueryParameterBaseName = "mode";
     localVarQueryParams.addAll(ApiClient.parameterToPairs("mode", mode));
+    localVarQueryParameterBaseName = "properties";
+    localVarQueryParams.addAll(ApiClient.parameterToPairs("properties", properties));
+    localVarQueryParameterBaseName = "storage_options";
+    localVarQueryParams.addAll(ApiClient.parameterToPairs("storage_options", storageOptions));
 
     if (!localVarQueryParams.isEmpty() || localVarQueryStringJoiner.length() != 0) {
       StringJoiner queryJoiner = new StringJoiner("&");
@@ -1657,6 +2041,159 @@ public class DataApi {
 
     try {
       byte[] localVarPostBody = memberVarObjectMapper.writeValueAsBytes(queryTableRequest);
+      localVarRequestBuilder.method(
+          "POST", HttpRequest.BodyPublishers.ofByteArray(localVarPostBody));
+    } catch (IOException e) {
+      throw new ApiException(e);
+    }
+    if (memberVarReadTimeout != null) {
+      localVarRequestBuilder.timeout(memberVarReadTimeout);
+    }
+    if (memberVarInterceptor != null) {
+      memberVarInterceptor.accept(localVarRequestBuilder);
+    }
+    return localVarRequestBuilder;
+  }
+
+  /**
+   * Trigger an async materialized view refresh Trigger an asynchronous refresh job for materialized
+   * view &#x60;id&#x60;. Returns a job ID for tracking.
+   *
+   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
+   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
+   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
+   *     root namespace. (required)
+   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
+   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
+   *     (optional)
+   * @param refreshMaterializedViewRequest (optional)
+   * @return CompletableFuture&lt;RefreshMaterializedViewResponse&gt;
+   * @throws ApiException if fails to make API call
+   */
+  public CompletableFuture<RefreshMaterializedViewResponse> refreshMaterializedView(
+      String id, String delimiter, RefreshMaterializedViewRequest refreshMaterializedViewRequest)
+      throws ApiException {
+    try {
+      HttpRequest.Builder localVarRequestBuilder =
+          refreshMaterializedViewRequestBuilder(id, delimiter, refreshMaterializedViewRequest);
+      return memberVarHttpClient
+          .sendAsync(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofString())
+          .thenComposeAsync(
+              localVarResponse -> {
+                if (localVarResponse.statusCode() / 100 != 2) {
+                  return CompletableFuture.failedFuture(
+                      getApiException("refreshMaterializedView", localVarResponse));
+                }
+                try {
+                  String responseBody = localVarResponse.body();
+                  return CompletableFuture.completedFuture(
+                      responseBody == null || responseBody.isBlank()
+                          ? null
+                          : memberVarObjectMapper.readValue(
+                              responseBody,
+                              new TypeReference<RefreshMaterializedViewResponse>() {}));
+                } catch (IOException e) {
+                  return CompletableFuture.failedFuture(new ApiException(e));
+                }
+              });
+    } catch (ApiException e) {
+      return CompletableFuture.failedFuture(e);
+    }
+  }
+
+  /**
+   * Trigger an async materialized view refresh Trigger an asynchronous refresh job for materialized
+   * view &#x60;id&#x60;. Returns a job ID for tracking.
+   *
+   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
+   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
+   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
+   *     root namespace. (required)
+   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
+   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
+   *     (optional)
+   * @param refreshMaterializedViewRequest (optional)
+   * @return CompletableFuture&lt;ApiResponse&lt;RefreshMaterializedViewResponse&gt;&gt;
+   * @throws ApiException if fails to make API call
+   */
+  public CompletableFuture<ApiResponse<RefreshMaterializedViewResponse>>
+      refreshMaterializedViewWithHttpInfo(
+          String id,
+          String delimiter,
+          RefreshMaterializedViewRequest refreshMaterializedViewRequest)
+          throws ApiException {
+    try {
+      HttpRequest.Builder localVarRequestBuilder =
+          refreshMaterializedViewRequestBuilder(id, delimiter, refreshMaterializedViewRequest);
+      return memberVarHttpClient
+          .sendAsync(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofString())
+          .thenComposeAsync(
+              localVarResponse -> {
+                if (memberVarAsyncResponseInterceptor != null) {
+                  memberVarAsyncResponseInterceptor.accept(localVarResponse);
+                }
+                if (localVarResponse.statusCode() / 100 != 2) {
+                  return CompletableFuture.failedFuture(
+                      getApiException("refreshMaterializedView", localVarResponse));
+                }
+                try {
+                  String responseBody = localVarResponse.body();
+                  return CompletableFuture.completedFuture(
+                      new ApiResponse<RefreshMaterializedViewResponse>(
+                          localVarResponse.statusCode(),
+                          localVarResponse.headers().map(),
+                          responseBody == null || responseBody.isBlank()
+                              ? null
+                              : memberVarObjectMapper.readValue(
+                                  responseBody,
+                                  new TypeReference<RefreshMaterializedViewResponse>() {})));
+                } catch (IOException e) {
+                  return CompletableFuture.failedFuture(new ApiException(e));
+                }
+              });
+    } catch (ApiException e) {
+      return CompletableFuture.failedFuture(e);
+    }
+  }
+
+  private HttpRequest.Builder refreshMaterializedViewRequestBuilder(
+      String id, String delimiter, RefreshMaterializedViewRequest refreshMaterializedViewRequest)
+      throws ApiException {
+    // verify the required parameter 'id' is set
+    if (id == null) {
+      throw new ApiException(
+          400, "Missing the required parameter 'id' when calling refreshMaterializedView");
+    }
+
+    HttpRequest.Builder localVarRequestBuilder = HttpRequest.newBuilder();
+
+    String localVarPath =
+        "/v1/materialized_view/{id}/refresh".replace("{id}", ApiClient.urlEncode(id.toString()));
+
+    List<Pair> localVarQueryParams = new ArrayList<>();
+    StringJoiner localVarQueryStringJoiner = new StringJoiner("&");
+    String localVarQueryParameterBaseName;
+    localVarQueryParameterBaseName = "delimiter";
+    localVarQueryParams.addAll(ApiClient.parameterToPairs("delimiter", delimiter));
+
+    if (!localVarQueryParams.isEmpty() || localVarQueryStringJoiner.length() != 0) {
+      StringJoiner queryJoiner = new StringJoiner("&");
+      localVarQueryParams.forEach(p -> queryJoiner.add(p.getName() + '=' + p.getValue()));
+      if (localVarQueryStringJoiner.length() != 0) {
+        queryJoiner.add(localVarQueryStringJoiner.toString());
+      }
+      localVarRequestBuilder.uri(
+          URI.create(memberVarBaseUri + localVarPath + '?' + queryJoiner.toString()));
+    } else {
+      localVarRequestBuilder.uri(URI.create(memberVarBaseUri + localVarPath));
+    }
+
+    localVarRequestBuilder.header("Content-Type", "application/json");
+    localVarRequestBuilder.header("Accept", "application/json");
+
+    try {
+      byte[] localVarPostBody =
+          memberVarObjectMapper.writeValueAsBytes(refreshMaterializedViewRequest);
       localVarRequestBuilder.method(
           "POST", HttpRequest.BodyPublishers.ofByteArray(localVarPostBody));
     } catch (IOException e) {

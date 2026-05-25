@@ -25,7 +25,6 @@ and plugin registration mechanism.
 """
 
 import importlib
-import warnings
 from abc import ABC, abstractmethod
 from typing import Dict
 
@@ -62,6 +61,8 @@ from lance_namespace_urllib3_client.models import (
     AlterTableAddColumnsResponse,
     AlterTableAlterColumnsRequest,
     AlterTableAlterColumnsResponse,
+    AlterTableBackfillColumnsRequest,
+    AlterTableBackfillColumnsResponse,
     AlterTableDropColumnsRequest,
     AlterTableDropColumnsResponse,
     AlterTransactionRequest,
@@ -76,9 +77,10 @@ from lance_namespace_urllib3_client.models import (
     CommitTableOperation,
     CommitTableResult,
     CountTableRowsRequest,
+    CreateMaterializedViewRequest,
+    CreateMaterializedViewResponse,
+    MaterializedViewUdtfEntry,
     CreateTableVersionEntry,
-    CreateEmptyTableRequest,
-    CreateEmptyTableResponse,
     CreateNamespaceRequest,
     CreateNamespaceResponse,
     CreateTableIndexRequest,
@@ -135,6 +137,8 @@ from lance_namespace_urllib3_client.models import (
     MergeInsertIntoTableResponse,
     NamespaceExistsRequest,
     QueryTableRequest,
+    RefreshMaterializedViewRequest,
+    RefreshMaterializedViewResponse,
     RegisterTableRequest,
     RegisterTableResponse,
     RenameTableRequest,
@@ -189,6 +193,8 @@ __all__ = [
     "AlterTableAddColumnsResponse",
     "AlterTableAlterColumnsRequest",
     "AlterTableAlterColumnsResponse",
+    "AlterTableBackfillColumnsRequest",
+    "AlterTableBackfillColumnsResponse",
     "AlterTableDropColumnsRequest",
     "AlterTableDropColumnsResponse",
     "AlterTransactionRequest",
@@ -203,9 +209,10 @@ __all__ = [
     "CommitTableOperation",
     "CommitTableResult",
     "CountTableRowsRequest",
+    "CreateMaterializedViewRequest",
+    "CreateMaterializedViewResponse",
+    "MaterializedViewUdtfEntry",
     "CreateTableVersionEntry",
-    "CreateEmptyTableRequest",
-    "CreateEmptyTableResponse",
     "CreateNamespaceRequest",
     "CreateNamespaceResponse",
     "CreateTableIndexRequest",
@@ -262,6 +269,8 @@ __all__ = [
     "MergeInsertIntoTableResponse",
     "NamespaceExistsRequest",
     "QueryTableRequest",
+    "RefreshMaterializedViewRequest",
+    "RefreshMaterializedViewResponse",
     "RegisterTableRequest",
     "RegisterTableResponse",
     "RenameTableRequest",
@@ -505,30 +514,6 @@ class LanceNamespace(ABC):
             If a concurrent modification conflict occurs.
         """
         raise UnsupportedOperationError("Not supported: declare_table")
-
-    def create_empty_table(
-        self, request: CreateEmptyTableRequest
-    ) -> CreateEmptyTableResponse:
-        """Create an empty table (metadata only operation).
-
-        .. deprecated::
-            Use :meth:`declare_table` instead.
-
-        Raises
-        ------
-        NamespaceNotFoundError
-            If the namespace does not exist.
-        TableAlreadyExistsError
-            If a table with the same name already exists.
-        ConcurrentModificationError
-            If a concurrent modification conflict occurs.
-        """
-        warnings.warn(
-            "create_empty_table is deprecated, use declare_table instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        raise UnsupportedOperationError("Not supported: create_empty_table")
 
     def insert_into_table(
         self, request: InsertIntoTableRequest, request_data: bytes
@@ -946,6 +931,48 @@ class LanceNamespace(ABC):
             If the schema validation fails.
         """
         raise UnsupportedOperationError("Not supported: alter_table_alter_columns")
+
+    def alter_table_backfill_columns(
+        self, request: AlterTableBackfillColumnsRequest
+    ) -> AlterTableBackfillColumnsResponse:
+        """Trigger an async backfill job for a computed column.
+
+        Raises
+        ------
+        TableNotFoundError
+            If the table does not exist.
+        """
+        raise UnsupportedOperationError(
+            "Not supported: alter_table_backfill_columns"
+        )
+
+    def create_materialized_view(
+        self, request: CreateMaterializedViewRequest
+    ) -> CreateMaterializedViewResponse:
+        """Create a materialized view.
+
+        Raises
+        ------
+        TableAlreadyExistsError
+            If a table with the same identifier already exists.
+        """
+        raise UnsupportedOperationError(
+            "Not supported: create_materialized_view"
+        )
+
+    def refresh_materialized_view(
+        self, request: RefreshMaterializedViewRequest
+    ) -> RefreshMaterializedViewResponse:
+        """Trigger an async materialized view refresh.
+
+        Raises
+        ------
+        TableNotFoundError
+            If the table does not exist.
+        """
+        raise UnsupportedOperationError(
+            "Not supported: refresh_materialized_view"
+        )
 
     def alter_table_drop_columns(
         self, request: AlterTableDropColumnsRequest

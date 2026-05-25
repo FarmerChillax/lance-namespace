@@ -32,20 +32,19 @@ public class AlterColumnsEntry {
 
   private Object dataType;
 
-  private String rename;
+  private String rename = null;
 
-  private Boolean nullable;
+  private Boolean nullable = null;
 
-  private AlterVirtualColumnEntry virtualColumn;
+  private AlterVirtualColumnEntry virtualColumn = null;
 
   public AlterColumnsEntry() {
     super();
   }
 
   /** Constructor with only required parameters */
-  public AlterColumnsEntry(String path, Object dataType) {
+  public AlterColumnsEntry(String path) {
     this.path = path;
-    this.dataType = dataType;
   }
 
   public AlterColumnsEntry path(String path) {
@@ -82,11 +81,10 @@ public class AlterColumnsEntry {
    *
    * @return dataType
    */
-  @NotNull
   @Schema(
       name = "data_type",
       description = "New data type for the column using JSON representation (optional)",
-      requiredMode = Schema.RequiredMode.REQUIRED)
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("data_type")
   public Object getDataType() {
     return dataType;
@@ -148,15 +146,12 @@ public class AlterColumnsEntry {
   }
 
   /**
-   * Virtual column alterations (optional)
+   * Get virtualColumn
    *
    * @return virtualColumn
    */
   @Valid
-  @Schema(
-      name = "virtual_column",
-      description = "Virtual column alterations (optional)",
-      requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @Schema(name = "virtual_column", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("virtual_column")
   public AlterVirtualColumnEntry getVirtualColumn() {
     return virtualColumn;

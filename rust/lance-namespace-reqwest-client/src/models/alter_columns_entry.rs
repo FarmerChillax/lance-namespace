@@ -17,24 +17,23 @@ pub struct AlterColumnsEntry {
     #[serde(rename = "path")]
     pub path: String,
     /// New data type for the column using JSON representation (optional)
-    #[serde(rename = "data_type")]
-    pub data_type: serde_json::Value,
+    #[serde(rename = "data_type", skip_serializing_if = "Option::is_none")]
+    pub data_type: Option<serde_json::Value>,
     /// New name for the column (optional)
-    #[serde(rename = "rename", skip_serializing_if = "Option::is_none")]
-    pub rename: Option<String>,
+    #[serde(rename = "rename", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
+    pub rename: Option<Option<String>>,
     /// Whether the column should be nullable (optional)
-    #[serde(rename = "nullable", skip_serializing_if = "Option::is_none")]
-    pub nullable: Option<bool>,
-    /// Virtual column alterations (optional)
-    #[serde(rename = "virtual_column", skip_serializing_if = "Option::is_none")]
-    pub virtual_column: Option<Box<models::AlterVirtualColumnEntry>>,
+    #[serde(rename = "nullable", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
+    pub nullable: Option<Option<bool>>,
+    #[serde(rename = "virtual_column", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
+    pub virtual_column: Option<Option<Box<models::AlterVirtualColumnEntry>>>,
 }
 
 impl AlterColumnsEntry {
-    pub fn new(path: String, data_type: serde_json::Value) -> AlterColumnsEntry {
+    pub fn new(path: String) -> AlterColumnsEntry {
         AlterColumnsEntry {
             path,
-            data_type,
+            data_type: None,
             rename: None,
             nullable: None,
             virtual_column: None,

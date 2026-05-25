@@ -30,8 +30,6 @@ import org.lance.namespace.model.BatchCreateTableVersionsRequest;
 import org.lance.namespace.model.BatchCreateTableVersionsResponse;
 import org.lance.namespace.model.BatchDeleteTableVersionsRequest;
 import org.lance.namespace.model.BatchDeleteTableVersionsResponse;
-import org.lance.namespace.model.CreateEmptyTableRequest;
-import org.lance.namespace.model.CreateEmptyTableResponse;
 import org.lance.namespace.model.CreateNamespaceRequest;
 import org.lance.namespace.model.CreateNamespaceResponse;
 import org.lance.namespace.model.CreateTableIndexRequest;
@@ -689,118 +687,6 @@ public class MetadataApi extends BaseApi {
 
     TypeReference<BatchDeleteTableVersionsResponse> localVarReturnType =
         new TypeReference<BatchDeleteTableVersionsResponse>() {};
-    return apiClient.invokeAPI(
-        localVarPath,
-        "POST",
-        localVarQueryParams,
-        localVarCollectionQueryParams,
-        localVarQueryStringJoiner.toString(),
-        localVarPostBody,
-        localVarHeaderParams,
-        localVarCookieParams,
-        localVarFormParams,
-        localVarAccept,
-        localVarContentType,
-        localVarAuthNames,
-        localVarReturnType);
-  }
-
-  /**
-   * Create an empty table Create an empty table with the given name without touching storage. This
-   * is a metadata-only operation that records the table existence and sets up aspects like access
-   * control. For DirectoryNamespace implementation, this creates a &#x60;.lance-reserved&#x60; file
-   * in the table directory to mark the table&#39;s existence without creating actual Lance data
-   * files. **Deprecated**: Use &#x60;DeclareTable&#x60; instead.
-   *
-   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
-   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
-   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
-   *     root namespace. (required)
-   * @param createEmptyTableRequest (required)
-   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
-   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
-   *     (optional)
-   * @return CreateEmptyTableResponse
-   * @throws ApiException if fails to make API call
-   * @deprecated
-   */
-  @Deprecated
-  public CreateEmptyTableResponse createEmptyTable(
-      String id, CreateEmptyTableRequest createEmptyTableRequest, String delimiter)
-      throws ApiException {
-    return this.createEmptyTable(id, createEmptyTableRequest, delimiter, Collections.emptyMap());
-  }
-
-  /**
-   * Create an empty table Create an empty table with the given name without touching storage. This
-   * is a metadata-only operation that records the table existence and sets up aspects like access
-   * control. For DirectoryNamespace implementation, this creates a &#x60;.lance-reserved&#x60; file
-   * in the table directory to mark the table&#39;s existence without creating actual Lance data
-   * files. **Deprecated**: Use &#x60;DeclareTable&#x60; instead.
-   *
-   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
-   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
-   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
-   *     root namespace. (required)
-   * @param createEmptyTableRequest (required)
-   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
-   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
-   *     (optional)
-   * @param additionalHeaders additionalHeaders for this call
-   * @return CreateEmptyTableResponse
-   * @throws ApiException if fails to make API call
-   * @deprecated
-   */
-  @Deprecated
-  public CreateEmptyTableResponse createEmptyTable(
-      String id,
-      CreateEmptyTableRequest createEmptyTableRequest,
-      String delimiter,
-      Map<String, String> additionalHeaders)
-      throws ApiException {
-    Object localVarPostBody = createEmptyTableRequest;
-
-    // verify the required parameter 'id' is set
-    if (id == null) {
-      throw new ApiException(
-          400, "Missing the required parameter 'id' when calling createEmptyTable");
-    }
-
-    // verify the required parameter 'createEmptyTableRequest' is set
-    if (createEmptyTableRequest == null) {
-      throw new ApiException(
-          400,
-          "Missing the required parameter 'createEmptyTableRequest' when calling createEmptyTable");
-    }
-
-    // create path and map variables
-    String localVarPath =
-        "/v1/table/{id}/create-empty"
-            .replaceAll(
-                "\\{" + "id" + "\\}", apiClient.escapeString(apiClient.parameterToString(id)));
-
-    StringJoiner localVarQueryStringJoiner = new StringJoiner("&");
-    String localVarQueryParameterBaseName;
-    List<Pair> localVarQueryParams = new ArrayList<Pair>();
-    List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
-    Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-    Map<String, String> localVarCookieParams = new HashMap<String, String>();
-    Map<String, Object> localVarFormParams = new HashMap<String, Object>();
-
-    localVarQueryParams.addAll(apiClient.parameterToPair("delimiter", delimiter));
-
-    localVarHeaderParams.putAll(additionalHeaders);
-
-    final String[] localVarAccepts = {"application/json"};
-    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-
-    final String[] localVarContentTypes = {"application/json"};
-    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-
-    String[] localVarAuthNames = new String[] {"OAuth2", "ApiKeyAuth", "BearerAuth"};
-
-    TypeReference<CreateEmptyTableResponse> localVarReturnType =
-        new TypeReference<CreateEmptyTableResponse>() {};
     return apiClient.invokeAPI(
         localVarPath,
         "POST",
@@ -1752,8 +1638,9 @@ public class MetadataApi extends BaseApi {
 
   /**
    * Describe information of a table Describe the detailed information for table &#x60;id&#x60;.
-   * REST NAMESPACE ONLY REST namespace passes &#x60;with_table_uri&#x60; and
-   * &#x60;load_detailed_metadata&#x60; as query parameters instead of in the request body.
+   * REST NAMESPACE ONLY REST namespace passes &#x60;with_table_uri&#x60;,
+   * &#x60;load_detailed_metadata&#x60;, and &#x60;check_declared&#x60; as query parameters instead
+   * of in the request body.
    *
    * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
@@ -1769,6 +1656,10 @@ public class MetadataApi extends BaseApi {
    *     dataset. When false (default), only &#x60;location&#x60; is required in the response. When
    *     true, the response includes additional metadata such as &#x60;version&#x60;,
    *     &#x60;schema&#x60;, and &#x60;stats&#x60;. (optional, default to false)
+   * @param checkDeclared Whether to check if the table exists only as a namespace declaration
+   *     without storage data. When false (default), the response should return null for
+   *     &#x60;is_only_declared&#x60; unless another option such as
+   *     &#x60;load_detailed_metadata&#x60; requires the check. (optional, default to false)
    * @return DescribeTableResponse
    * @throws ApiException if fails to make API call
    */
@@ -1777,7 +1668,8 @@ public class MetadataApi extends BaseApi {
       DescribeTableRequest describeTableRequest,
       String delimiter,
       Boolean withTableUri,
-      Boolean loadDetailedMetadata)
+      Boolean loadDetailedMetadata,
+      Boolean checkDeclared)
       throws ApiException {
     return this.describeTable(
         id,
@@ -1785,13 +1677,15 @@ public class MetadataApi extends BaseApi {
         delimiter,
         withTableUri,
         loadDetailedMetadata,
+        checkDeclared,
         Collections.emptyMap());
   }
 
   /**
    * Describe information of a table Describe the detailed information for table &#x60;id&#x60;.
-   * REST NAMESPACE ONLY REST namespace passes &#x60;with_table_uri&#x60; and
-   * &#x60;load_detailed_metadata&#x60; as query parameters instead of in the request body.
+   * REST NAMESPACE ONLY REST namespace passes &#x60;with_table_uri&#x60;,
+   * &#x60;load_detailed_metadata&#x60;, and &#x60;check_declared&#x60; as query parameters instead
+   * of in the request body.
    *
    * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
@@ -1807,6 +1701,10 @@ public class MetadataApi extends BaseApi {
    *     dataset. When false (default), only &#x60;location&#x60; is required in the response. When
    *     true, the response includes additional metadata such as &#x60;version&#x60;,
    *     &#x60;schema&#x60;, and &#x60;stats&#x60;. (optional, default to false)
+   * @param checkDeclared Whether to check if the table exists only as a namespace declaration
+   *     without storage data. When false (default), the response should return null for
+   *     &#x60;is_only_declared&#x60; unless another option such as
+   *     &#x60;load_detailed_metadata&#x60; requires the check. (optional, default to false)
    * @param additionalHeaders additionalHeaders for this call
    * @return DescribeTableResponse
    * @throws ApiException if fails to make API call
@@ -1817,6 +1715,7 @@ public class MetadataApi extends BaseApi {
       String delimiter,
       Boolean withTableUri,
       Boolean loadDetailedMetadata,
+      Boolean checkDeclared,
       Map<String, String> additionalHeaders)
       throws ApiException {
     Object localVarPostBody = describeTableRequest;
@@ -1850,6 +1749,7 @@ public class MetadataApi extends BaseApi {
     localVarQueryParams.addAll(apiClient.parameterToPair("with_table_uri", withTableUri));
     localVarQueryParams.addAll(
         apiClient.parameterToPair("load_detailed_metadata", loadDetailedMetadata));
+    localVarQueryParams.addAll(apiClient.parameterToPair("check_declared", checkDeclared));
 
     localVarHeaderParams.putAll(additionalHeaders);
 
@@ -3138,7 +3038,7 @@ public class MetadataApi extends BaseApi {
    * It passes in the &#x60;ListTablesRequest&#x60; information in the following way: -
    * &#x60;id&#x60;: pass through path parameter of the same name - &#x60;page_token&#x60;: pass
    * through query parameter of the same name - &#x60;limit&#x60;: pass through query parameter of
-   * the same name
+   * the same name - &#x60;include_declared&#x60;: pass through query parameter of the same name
    *
    * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
@@ -3149,12 +3049,17 @@ public class MetadataApi extends BaseApi {
    *     (optional)
    * @param pageToken Pagination token from a previous request (optional)
    * @param limit Maximum number of items to return (optional)
+   * @param includeDeclared When true (default), includes tables that have been declared in the
+   *     namespace but not yet created on storage, in addition to tables that have been created.
+   *     When false, only tables with storage components are returned. (optional, default to true)
    * @return ListTablesResponse
    * @throws ApiException if fails to make API call
    */
-  public ListTablesResponse listTables(String id, String delimiter, String pageToken, Integer limit)
+  public ListTablesResponse listTables(
+      String id, String delimiter, String pageToken, Integer limit, Boolean includeDeclared)
       throws ApiException {
-    return this.listTables(id, delimiter, pageToken, limit, Collections.emptyMap());
+    return this.listTables(
+        id, delimiter, pageToken, limit, includeDeclared, Collections.emptyMap());
   }
 
   /**
@@ -3163,7 +3068,7 @@ public class MetadataApi extends BaseApi {
    * It passes in the &#x60;ListTablesRequest&#x60; information in the following way: -
    * &#x60;id&#x60;: pass through path parameter of the same name - &#x60;page_token&#x60;: pass
    * through query parameter of the same name - &#x60;limit&#x60;: pass through query parameter of
-   * the same name
+   * the same name - &#x60;include_declared&#x60;: pass through query parameter of the same name
    *
    * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
@@ -3174,6 +3079,9 @@ public class MetadataApi extends BaseApi {
    *     (optional)
    * @param pageToken Pagination token from a previous request (optional)
    * @param limit Maximum number of items to return (optional)
+   * @param includeDeclared When true (default), includes tables that have been declared in the
+   *     namespace but not yet created on storage, in addition to tables that have been created.
+   *     When false, only tables with storage components are returned. (optional, default to true)
    * @param additionalHeaders additionalHeaders for this call
    * @return ListTablesResponse
    * @throws ApiException if fails to make API call
@@ -3183,6 +3091,7 @@ public class MetadataApi extends BaseApi {
       String delimiter,
       String pageToken,
       Integer limit,
+      Boolean includeDeclared,
       Map<String, String> additionalHeaders)
       throws ApiException {
     Object localVarPostBody = null;
@@ -3209,6 +3118,7 @@ public class MetadataApi extends BaseApi {
     localVarQueryParams.addAll(apiClient.parameterToPair("delimiter", delimiter));
     localVarQueryParams.addAll(apiClient.parameterToPair("page_token", pageToken));
     localVarQueryParams.addAll(apiClient.parameterToPair("limit", limit));
+    localVarQueryParams.addAll(apiClient.parameterToPair("include_declared", includeDeclared));
 
     localVarHeaderParams.putAll(additionalHeaders);
 

@@ -38,9 +38,6 @@ class TestAlterTableAlterColumnsRequest(unittest.TestCase):
                 identity = lance_namespace_urllib3_client.models.identity.Identity(
                     api_key = '', 
                     auth_token = '', ),
-                context = {
-                    'key' : ''
-                    },
                 id = [
                     ''
                     ],
@@ -57,7 +54,14 @@ class TestAlterTableAlterColumnsRequest(unittest.TestCase):
                             image = '', 
                             udf = '', 
                             udf_name = '', 
-                            udf_version = '', ), )
+                            udf_version = '', 
+                            udf_backend = '', 
+                            auto_backfill = True, 
+                            manifest = '', 
+                            manifest_checksum = '', 
+                            field_metadata = {
+                                'key' : ''
+                                }, ), )
                     ]
             )
         else:
@@ -75,7 +79,14 @@ class TestAlterTableAlterColumnsRequest(unittest.TestCase):
                             image = '', 
                             udf = '', 
                             udf_name = '', 
-                            udf_version = '', ), )
+                            udf_version = '', 
+                            udf_backend = '', 
+                            auto_backfill = True, 
+                            manifest = '', 
+                            manifest_checksum = '', 
+                            field_metadata = {
+                                'key' : ''
+                                }, ), )
                     ],
         )
         """

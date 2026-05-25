@@ -6,13 +6,13 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**alter_table_add_columns**](TableApi.md#alter_table_add_columns) | **POST** /v1/table/{id}/add_columns | Add new columns to table schema
 [**alter_table_alter_columns**](TableApi.md#alter_table_alter_columns) | **POST** /v1/table/{id}/alter_columns | Modify existing columns
+[**alter_table_backfill_columns**](TableApi.md#alter_table_backfill_columns) | **POST** /v1/table/{id}/backfill_column | Trigger an async column backfill job
 [**alter_table_drop_columns**](TableApi.md#alter_table_drop_columns) | **POST** /v1/table/{id}/drop_columns | Remove columns from table
 [**analyze_table_query_plan**](TableApi.md#analyze_table_query_plan) | **POST** /v1/table/{id}/analyze_plan | Analyze query execution plan
 [**batch_commit_tables**](TableApi.md#batch_commit_tables) | **POST** /v1/table/batch-commit | Atomically commit a batch of mixed table operations
 [**batch_create_table_versions**](TableApi.md#batch_create_table_versions) | **POST** /v1/table/version/batch-create | Atomically create versions for multiple tables
 [**batch_delete_table_versions**](TableApi.md#batch_delete_table_versions) | **POST** /v1/table/{id}/version/delete | Delete table version records
 [**count_table_rows**](TableApi.md#count_table_rows) | **POST** /v1/table/{id}/count_rows | Count rows in a table
-[**create_empty_table**](TableApi.md#create_empty_table) | **POST** /v1/table/{id}/create-empty | Create an empty table
 [**create_table**](TableApi.md#create_table) | **POST** /v1/table/{id}/create | Create a table with the given name
 [**create_table_index**](TableApi.md#create_table_index) | **POST** /v1/table/{id}/create_index | Create an index on a table
 [**create_table_scalar_index**](TableApi.md#create_table_scalar_index) | **POST** /v1/table/{id}/create_scalar_index | Create a scalar index on a table
@@ -238,6 +238,107 @@ Name | Type | Description  | Notes
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Alter columns operation result |  -  |
+**400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
+**401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
+**403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
+**404** | A server-side problem that means can not find the specified resource. |  -  |
+**503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
+**5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **alter_table_backfill_columns**
+> AlterTableBackfillColumnsResponse alter_table_backfill_columns(id, alter_table_backfill_columns_request, delimiter=delimiter)
+
+Trigger an async column backfill job
+
+Trigger an asynchronous backfill job for a computed column on table `id`.
+The column must be a virtual (UDF-backed) column. Returns a job ID for tracking.
+
+
+### Example
+
+* OAuth Authentication (OAuth2):
+* Api Key Authentication (ApiKeyAuth):
+* Bearer Authentication (BearerAuth):
+
+```python
+import lance_namespace_urllib3_client
+from lance_namespace_urllib3_client.models.alter_table_backfill_columns_request import AlterTableBackfillColumnsRequest
+from lance_namespace_urllib3_client.models.alter_table_backfill_columns_response import AlterTableBackfillColumnsResponse
+from lance_namespace_urllib3_client.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost:2333
+# See configuration.py for a list of all supported configuration parameters.
+configuration = lance_namespace_urllib3_client.Configuration(
+    host = "http://localhost:2333"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+configuration.access_token = os.environ["ACCESS_TOKEN"]
+
+# Configure API key authorization: ApiKeyAuth
+configuration.api_key['ApiKeyAuth'] = os.environ["API_KEY"]
+
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['ApiKeyAuth'] = 'Bearer'
+
+# Configure Bearer authorization: BearerAuth
+configuration = lance_namespace_urllib3_client.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with lance_namespace_urllib3_client.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = lance_namespace_urllib3_client.TableApi(api_client)
+    id = 'id_example' # str | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. 
+    alter_table_backfill_columns_request = lance_namespace_urllib3_client.AlterTableBackfillColumnsRequest() # AlterTableBackfillColumnsRequest | 
+    delimiter = 'delimiter_example' # str | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  (optional)
+
+    try:
+        # Trigger an async column backfill job
+        api_response = api_instance.alter_table_backfill_columns(id, alter_table_backfill_columns_request, delimiter=delimiter)
+        print("The response of TableApi->alter_table_backfill_columns:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling TableApi->alter_table_backfill_columns: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **str**| &#x60;string identifier&#x60; of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the root namespace.  | 
+ **alter_table_backfill_columns_request** | [**AlterTableBackfillColumnsRequest**](AlterTableBackfillColumnsRequest.md)|  | 
+ **delimiter** | **str**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] 
+
+### Return type
+
+[**AlterTableBackfillColumnsResponse**](AlterTableBackfillColumnsResponse.md)
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**202** | Backfill job accepted |  -  |
 **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
 **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
 **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
@@ -875,115 +976,8 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **create_empty_table**
-> CreateEmptyTableResponse create_empty_table(id, create_empty_table_request, delimiter=delimiter)
-
-Create an empty table
-
-Create an empty table with the given name without touching storage.
-This is a metadata-only operation that records the table existence and sets up aspects like access control.
-
-For DirectoryNamespace implementation, this creates a `.lance-reserved` file in the table directory
-to mark the table's existence without creating actual Lance data files.
-
-**Deprecated**: Use `DeclareTable` instead.
-
-
-### Example
-
-* OAuth Authentication (OAuth2):
-* Api Key Authentication (ApiKeyAuth):
-* Bearer Authentication (BearerAuth):
-
-```python
-import lance_namespace_urllib3_client
-from lance_namespace_urllib3_client.models.create_empty_table_request import CreateEmptyTableRequest
-from lance_namespace_urllib3_client.models.create_empty_table_response import CreateEmptyTableResponse
-from lance_namespace_urllib3_client.rest import ApiException
-from pprint import pprint
-
-# Defining the host is optional and defaults to http://localhost:2333
-# See configuration.py for a list of all supported configuration parameters.
-configuration = lance_namespace_urllib3_client.Configuration(
-    host = "http://localhost:2333"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-configuration.access_token = os.environ["ACCESS_TOKEN"]
-
-# Configure API key authorization: ApiKeyAuth
-configuration.api_key['ApiKeyAuth'] = os.environ["API_KEY"]
-
-# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-# configuration.api_key_prefix['ApiKeyAuth'] = 'Bearer'
-
-# Configure Bearer authorization: BearerAuth
-configuration = lance_namespace_urllib3_client.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
-)
-
-# Enter a context with an instance of the API client
-with lance_namespace_urllib3_client.ApiClient(configuration) as api_client:
-    # Create an instance of the API class
-    api_instance = lance_namespace_urllib3_client.TableApi(api_client)
-    id = 'id_example' # str | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. 
-    create_empty_table_request = lance_namespace_urllib3_client.CreateEmptyTableRequest() # CreateEmptyTableRequest | 
-    delimiter = 'delimiter_example' # str | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  (optional)
-
-    try:
-        # Create an empty table
-        api_response = api_instance.create_empty_table(id, create_empty_table_request, delimiter=delimiter)
-        print("The response of TableApi->create_empty_table:\n")
-        pprint(api_response)
-    except Exception as e:
-        print("Exception when calling TableApi->create_empty_table: %s\n" % e)
-```
-
-
-
-### Parameters
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **id** | **str**| &#x60;string identifier&#x60; of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the root namespace.  | 
- **create_empty_table_request** | [**CreateEmptyTableRequest**](CreateEmptyTableRequest.md)|  | 
- **delimiter** | **str**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] 
-
-### Return type
-
-[**CreateEmptyTableResponse**](CreateEmptyTableResponse.md)
-
-### Authorization
-
-[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | Table properties result when creating an empty table |  -  |
-**400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
-**401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
-**403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
-**404** | A server-side problem that means can not find the specified resource. |  -  |
-**409** | The request conflicts with the current state of the target resource. |  -  |
-**503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
-**5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
 # **create_table**
-> CreateTableResponse create_table(id, body, delimiter=delimiter, mode=mode)
+> CreateTableResponse create_table(id, body, delimiter=delimiter, mode=mode, properties=properties, storage_options=storage_options)
 
 Create a table with the given name
 
@@ -997,6 +991,12 @@ REST namespace uses Arrow IPC stream as the request body.
 It passes in the `CreateTableRequest` information in the following way:
 - `id`: pass through path parameter of the same name
 - `mode`: pass through query parameter of the same name
+- `properties`: serialize as a single JSON-encoded query parameter such as
+  `properties={"user":"alice","team":"eng"}`; these are business logic properties
+  managed by the namespace implementation outside Lance context
+- `storage_options`: serialize as a single JSON-encoded query parameter such as
+  `storage_options={"aws_region":"us-east-1","timeout":"30s"}`; these configure
+  write-time overrides for data and metadata written during table creation
 
 
 ### Example
@@ -1043,10 +1043,12 @@ with lance_namespace_urllib3_client.ApiClient(configuration) as api_client:
     body = None # bytearray | Arrow IPC data
     delimiter = 'delimiter_example' # str | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  (optional)
     mode = 'mode_example' # str |  (optional)
+    properties = 'properties_example' # str | Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as `properties={\"user\":\"alice\",\"team\":\"eng\"}`.  (optional)
+    storage_options = 'storage_options_example' # str | Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`.  (optional)
 
     try:
         # Create a table with the given name
-        api_response = api_instance.create_table(id, body, delimiter=delimiter, mode=mode)
+        api_response = api_instance.create_table(id, body, delimiter=delimiter, mode=mode, properties=properties, storage_options=storage_options)
         print("The response of TableApi->create_table:\n")
         pprint(api_response)
     except Exception as e:
@@ -1064,6 +1066,8 @@ Name | Type | Description  | Notes
  **body** | **bytearray**| Arrow IPC data | 
  **delimiter** | **str**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] 
  **mode** | **str**|  | [optional] 
+ **properties** | **str**| Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;.  | [optional] 
+ **storage_options** | **str**| Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;.  | [optional] 
 
 ### Return type
 
@@ -1087,6 +1091,7 @@ Name | Type | Description  | Notes
 **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
 **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
 **404** | A server-side problem that means can not find the specified resource. |  -  |
+**409** | The request conflicts with the current state of the target resource. |  -  |
 **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
 **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
 
@@ -1910,14 +1915,14 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **describe_table**
-> DescribeTableResponse describe_table(id, describe_table_request, delimiter=delimiter, with_table_uri=with_table_uri, load_detailed_metadata=load_detailed_metadata)
+> DescribeTableResponse describe_table(id, describe_table_request, delimiter=delimiter, with_table_uri=with_table_uri, load_detailed_metadata=load_detailed_metadata, check_declared=check_declared)
 
 Describe information of a table
 
 Describe the detailed information for table `id`.
 
 REST NAMESPACE ONLY
-REST namespace passes `with_table_uri` and `load_detailed_metadata` as query parameters instead of in the request body.
+REST namespace passes `with_table_uri`, `load_detailed_metadata`, and `check_declared` as query parameters instead of in the request body.
 
 
 ### Example
@@ -1966,10 +1971,11 @@ with lance_namespace_urllib3_client.ApiClient(configuration) as api_client:
     delimiter = 'delimiter_example' # str | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  (optional)
     with_table_uri = False # bool | Whether to include the table URI in the response (optional) (default to False)
     load_detailed_metadata = False # bool | Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`.  (optional) (default to False)
+    check_declared = False # bool | Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check.  (optional) (default to False)
 
     try:
         # Describe information of a table
-        api_response = api_instance.describe_table(id, describe_table_request, delimiter=delimiter, with_table_uri=with_table_uri, load_detailed_metadata=load_detailed_metadata)
+        api_response = api_instance.describe_table(id, describe_table_request, delimiter=delimiter, with_table_uri=with_table_uri, load_detailed_metadata=load_detailed_metadata, check_declared=check_declared)
         print("The response of TableApi->describe_table:\n")
         pprint(api_response)
     except Exception as e:
@@ -1988,6 +1994,7 @@ Name | Type | Description  | Notes
  **delimiter** | **str**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] 
  **with_table_uri** | **bool**| Whether to include the table URI in the response | [optional] [default to False]
  **load_detailed_metadata** | **bool**| Whether to load detailed metadata that requires opening the dataset. When false (default), only &#x60;location&#x60; is required in the response. When true, the response includes additional metadata such as &#x60;version&#x60;, &#x60;schema&#x60;, and &#x60;stats&#x60;.  | [optional] [default to False]
+ **check_declared** | **bool**| Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for &#x60;is_only_declared&#x60; unless another option such as &#x60;load_detailed_metadata&#x60; requires the check.  | [optional] [default to False]
 
 ### Return type
 
@@ -2844,7 +2851,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_all_tables**
-> ListTablesResponse list_all_tables(delimiter=delimiter, page_token=page_token, limit=limit)
+> ListTablesResponse list_all_tables(delimiter=delimiter, page_token=page_token, limit=limit, include_declared=include_declared)
 
 List all tables
 
@@ -2856,6 +2863,7 @@ It passes in the `ListAllTablesRequest` information in the following way:
 - `page_token`: pass through query parameter of the same name
 - `limit`: pass through query parameter of the same name
 - `delimiter`: pass through query parameter of the same name
+- `include_declared`: pass through query parameter of the same name
 
 
 ### Example
@@ -2901,10 +2909,11 @@ with lance_namespace_urllib3_client.ApiClient(configuration) as api_client:
     delimiter = 'delimiter_example' # str | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  (optional)
     page_token = 'page_token_example' # str | Pagination token from a previous request (optional)
     limit = 56 # int | Maximum number of items to return (optional)
+    include_declared = True # bool | When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned.  (optional) (default to True)
 
     try:
         # List all tables
-        api_response = api_instance.list_all_tables(delimiter=delimiter, page_token=page_token, limit=limit)
+        api_response = api_instance.list_all_tables(delimiter=delimiter, page_token=page_token, limit=limit, include_declared=include_declared)
         print("The response of TableApi->list_all_tables:\n")
         pprint(api_response)
     except Exception as e:
@@ -2921,6 +2930,7 @@ Name | Type | Description  | Notes
  **delimiter** | **str**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] 
  **page_token** | **str**| Pagination token from a previous request | [optional] 
  **limit** | **int**| Maximum number of items to return | [optional] 
+ **include_declared** | **bool**| When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned.  | [optional] [default to True]
 
 ### Return type
 
@@ -3273,7 +3283,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_tables**
-> ListTablesResponse list_tables(id, delimiter=delimiter, page_token=page_token, limit=limit)
+> ListTablesResponse list_tables(id, delimiter=delimiter, page_token=page_token, limit=limit, include_declared=include_declared)
 
 List tables in a namespace
 
@@ -3285,6 +3295,7 @@ It passes in the `ListTablesRequest` information in the following way:
 - `id`: pass through path parameter of the same name
 - `page_token`: pass through query parameter of the same name
 - `limit`: pass through query parameter of the same name
+- `include_declared`: pass through query parameter of the same name
 
 
 ### Example
@@ -3331,10 +3342,11 @@ with lance_namespace_urllib3_client.ApiClient(configuration) as api_client:
     delimiter = 'delimiter_example' # str | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  (optional)
     page_token = 'page_token_example' # str | Pagination token from a previous request (optional)
     limit = 56 # int | Maximum number of items to return (optional)
+    include_declared = True # bool | When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned.  (optional) (default to True)
 
     try:
         # List tables in a namespace
-        api_response = api_instance.list_tables(id, delimiter=delimiter, page_token=page_token, limit=limit)
+        api_response = api_instance.list_tables(id, delimiter=delimiter, page_token=page_token, limit=limit, include_declared=include_declared)
         print("The response of TableApi->list_tables:\n")
         pprint(api_response)
     except Exception as e:
@@ -3352,6 +3364,7 @@ Name | Type | Description  | Notes
  **delimiter** | **str**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] 
  **page_token** | **str**| Pagination token from a previous request | [optional] 
  **limit** | **int**| Maximum number of items to return | [optional] 
+ **include_declared** | **bool**| When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned.  | [optional] [default to True]
 
 ### Return type
 

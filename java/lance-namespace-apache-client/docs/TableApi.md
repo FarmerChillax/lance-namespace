@@ -6,13 +6,13 @@ All URIs are relative to *http://localhost:2333*
 |------------- | ------------- | -------------|
 | [**alterTableAddColumns**](TableApi.md#alterTableAddColumns) | **POST** /v1/table/{id}/add_columns | Add new columns to table schema |
 | [**alterTableAlterColumns**](TableApi.md#alterTableAlterColumns) | **POST** /v1/table/{id}/alter_columns | Modify existing columns |
+| [**alterTableBackfillColumns**](TableApi.md#alterTableBackfillColumns) | **POST** /v1/table/{id}/backfill_column | Trigger an async column backfill job |
 | [**alterTableDropColumns**](TableApi.md#alterTableDropColumns) | **POST** /v1/table/{id}/drop_columns | Remove columns from table |
 | [**analyzeTableQueryPlan**](TableApi.md#analyzeTableQueryPlan) | **POST** /v1/table/{id}/analyze_plan | Analyze query execution plan |
 | [**batchCommitTables**](TableApi.md#batchCommitTables) | **POST** /v1/table/batch-commit | Atomically commit a batch of mixed table operations |
 | [**batchCreateTableVersions**](TableApi.md#batchCreateTableVersions) | **POST** /v1/table/version/batch-create | Atomically create versions for multiple tables |
 | [**batchDeleteTableVersions**](TableApi.md#batchDeleteTableVersions) | **POST** /v1/table/{id}/version/delete | Delete table version records |
 | [**countTableRows**](TableApi.md#countTableRows) | **POST** /v1/table/{id}/count_rows | Count rows in a table |
-| [**createEmptyTable**](TableApi.md#createEmptyTable) | **POST** /v1/table/{id}/create-empty | Create an empty table |
 | [**createTable**](TableApi.md#createTable) | **POST** /v1/table/{id}/create | Create a table with the given name |
 | [**createTableIndex**](TableApi.md#createTableIndex) | **POST** /v1/table/{id}/create_index | Create an index on a table |
 | [**createTableScalarIndex**](TableApi.md#createTableScalarIndex) | **POST** /v1/table/{id}/create_scalar_index | Create a scalar index on a table |
@@ -222,6 +222,97 @@ public class Example {
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | Alter columns operation result |  -  |
+| **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
+| **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
+| **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
+| **404** | A server-side problem that means can not find the specified resource. |  -  |
+| **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
+| **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
+
+
+## alterTableBackfillColumns
+
+> AlterTableBackfillColumnsResponse alterTableBackfillColumns(id, alterTableBackfillColumnsRequest, delimiter)
+
+Trigger an async column backfill job
+
+Trigger an asynchronous backfill job for a computed column on table &#x60;id&#x60;. The column must be a virtual (UDF-backed) column. Returns a job ID for tracking. 
+
+### Example
+
+```java
+// Import classes:
+import org.lance.namespace.client.apache.ApiClient;
+import org.lance.namespace.client.apache.ApiException;
+import org.lance.namespace.client.apache.Configuration;
+import org.lance.namespace.client.apache.auth.*;
+import org.lance.namespace.client.apache.models.*;
+import org.lance.namespace.client.apache.api.TableApi;
+
+public class Example {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath("http://localhost:2333");
+        
+        // Configure OAuth2 access token for authorization: OAuth2
+        OAuth OAuth2 = (OAuth) defaultClient.getAuthentication("OAuth2");
+        OAuth2.setAccessToken("YOUR ACCESS TOKEN");
+
+        // Configure API key authorization: ApiKeyAuth
+        ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+        ApiKeyAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //ApiKeyAuth.setApiKeyPrefix("Token");
+
+        // Configure HTTP bearer authorization: BearerAuth
+        HttpBearerAuth BearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("BearerAuth");
+        BearerAuth.setBearerToken("BEARER TOKEN");
+
+        TableApi apiInstance = new TableApi(defaultClient);
+        String id = "id_example"; // String | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. 
+        AlterTableBackfillColumnsRequest alterTableBackfillColumnsRequest = new AlterTableBackfillColumnsRequest(); // AlterTableBackfillColumnsRequest | 
+        String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        try {
+            AlterTableBackfillColumnsResponse result = apiInstance.alterTableBackfillColumns(id, alterTableBackfillColumnsRequest, delimiter);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling TableApi#alterTableBackfillColumns");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | **String**| &#x60;string identifier&#x60; of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the root namespace.  | |
+| **alterTableBackfillColumnsRequest** | [**AlterTableBackfillColumnsRequest**](AlterTableBackfillColumnsRequest.md)|  | |
+| **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
+
+### Return type
+
+[**AlterTableBackfillColumnsResponse**](AlterTableBackfillColumnsResponse.md)
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **202** | Backfill job accepted |  -  |
 | **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
 | **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
 | **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
@@ -774,105 +865,13 @@ public class Example {
 | **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
 
 
-## createEmptyTable
-
-> CreateEmptyTableResponse createEmptyTable(id, createEmptyTableRequest, delimiter)
-
-Create an empty table
-
-Create an empty table with the given name without touching storage. This is a metadata-only operation that records the table existence and sets up aspects like access control.  For DirectoryNamespace implementation, this creates a &#x60;.lance-reserved&#x60; file in the table directory to mark the table&#39;s existence without creating actual Lance data files.  **Deprecated**: Use &#x60;DeclareTable&#x60; instead. 
-
-### Example
-
-```java
-// Import classes:
-import org.lance.namespace.client.apache.ApiClient;
-import org.lance.namespace.client.apache.ApiException;
-import org.lance.namespace.client.apache.Configuration;
-import org.lance.namespace.client.apache.auth.*;
-import org.lance.namespace.client.apache.models.*;
-import org.lance.namespace.client.apache.api.TableApi;
-
-public class Example {
-    public static void main(String[] args) {
-        ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:2333");
-        
-        // Configure OAuth2 access token for authorization: OAuth2
-        OAuth OAuth2 = (OAuth) defaultClient.getAuthentication("OAuth2");
-        OAuth2.setAccessToken("YOUR ACCESS TOKEN");
-
-        // Configure API key authorization: ApiKeyAuth
-        ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
-        ApiKeyAuth.setApiKey("YOUR API KEY");
-        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
-        //ApiKeyAuth.setApiKeyPrefix("Token");
-
-        // Configure HTTP bearer authorization: BearerAuth
-        HttpBearerAuth BearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("BearerAuth");
-        BearerAuth.setBearerToken("BEARER TOKEN");
-
-        TableApi apiInstance = new TableApi(defaultClient);
-        String id = "id_example"; // String | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. 
-        CreateEmptyTableRequest createEmptyTableRequest = new CreateEmptyTableRequest(); // CreateEmptyTableRequest | 
-        String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
-        try {
-            CreateEmptyTableResponse result = apiInstance.createEmptyTable(id, createEmptyTableRequest, delimiter);
-            System.out.println(result);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling TableApi#createEmptyTable");
-            System.err.println("Status code: " + e.getCode());
-            System.err.println("Reason: " + e.getResponseBody());
-            System.err.println("Response headers: " + e.getResponseHeaders());
-            e.printStackTrace();
-        }
-    }
-}
-```
-
-### Parameters
-
-
-| Name | Type | Description  | Notes |
-|------------- | ------------- | ------------- | -------------|
-| **id** | **String**| &#x60;string identifier&#x60; of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the root namespace.  | |
-| **createEmptyTableRequest** | [**CreateEmptyTableRequest**](CreateEmptyTableRequest.md)|  | |
-| **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
-
-### Return type
-
-[**CreateEmptyTableResponse**](CreateEmptyTableResponse.md)
-
-### Authorization
-
-[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
-
-### HTTP request headers
-
-- **Content-Type**: application/json
-- **Accept**: application/json
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-| **200** | Table properties result when creating an empty table |  -  |
-| **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
-| **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
-| **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
-| **404** | A server-side problem that means can not find the specified resource. |  -  |
-| **409** | The request conflicts with the current state of the target resource. |  -  |
-| **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
-| **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
-
-
 ## createTable
 
-> CreateTableResponse createTable(id, body, delimiter, mode)
+> CreateTableResponse createTable(id, body, delimiter, mode, properties, storageOptions)
 
 Create a table with the given name
 
-Create table &#x60;id&#x60; in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the &#x60;CreateTableRequest&#x60; information in the following way: - &#x60;id&#x60;: pass through path parameter of the same name - &#x60;mode&#x60;: pass through query parameter of the same name 
+Create table &#x60;id&#x60; in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the &#x60;CreateTableRequest&#x60; information in the following way: - &#x60;id&#x60;: pass through path parameter of the same name - &#x60;mode&#x60;: pass through query parameter of the same name - &#x60;properties&#x60;: serialize as a single JSON-encoded query parameter such as   &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;; these are business logic properties   managed by the namespace implementation outside Lance context - &#x60;storage_options&#x60;: serialize as a single JSON-encoded query parameter such as   &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;; these configure   write-time overrides for data and metadata written during table creation 
 
 ### Example
 
@@ -909,8 +908,10 @@ public class Example {
         byte[] body = null; // byte[] | Arrow IPC data
         String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         String mode = "mode_example"; // String | 
+        String properties = "properties_example"; // String | Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as `properties={\"user\":\"alice\",\"team\":\"eng\"}`. 
+        String storageOptions = "storageOptions_example"; // String | Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`. 
         try {
-            CreateTableResponse result = apiInstance.createTable(id, body, delimiter, mode);
+            CreateTableResponse result = apiInstance.createTable(id, body, delimiter, mode, properties, storageOptions);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TableApi#createTable");
@@ -932,6 +933,8 @@ public class Example {
 | **body** | **byte[]**| Arrow IPC data | |
 | **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
 | **mode** | **String**|  | [optional] |
+| **properties** | **String**| Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;.  | [optional] |
+| **storageOptions** | **String**| Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;.  | [optional] |
 
 ### Return type
 
@@ -955,6 +958,7 @@ public class Example {
 | **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
 | **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
 | **404** | A server-side problem that means can not find the specified resource. |  -  |
+| **409** | The request conflicts with the current state of the target resource. |  -  |
 | **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
 | **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
 
@@ -1692,11 +1696,11 @@ public class Example {
 
 ## describeTable
 
-> DescribeTableResponse describeTable(id, describeTableRequest, delimiter, withTableUri, loadDetailedMetadata)
+> DescribeTableResponse describeTable(id, describeTableRequest, delimiter, withTableUri, loadDetailedMetadata, checkDeclared)
 
 Describe information of a table
 
-Describe the detailed information for table &#x60;id&#x60;.  REST NAMESPACE ONLY REST namespace passes &#x60;with_table_uri&#x60; and &#x60;load_detailed_metadata&#x60; as query parameters instead of in the request body. 
+Describe the detailed information for table &#x60;id&#x60;.  REST NAMESPACE ONLY REST namespace passes &#x60;with_table_uri&#x60;, &#x60;load_detailed_metadata&#x60;, and &#x60;check_declared&#x60; as query parameters instead of in the request body. 
 
 ### Example
 
@@ -1734,8 +1738,9 @@ public class Example {
         String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         Boolean withTableUri = false; // Boolean | Whether to include the table URI in the response
         Boolean loadDetailedMetadata = false; // Boolean | Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`. 
+        Boolean checkDeclared = false; // Boolean | Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check. 
         try {
-            DescribeTableResponse result = apiInstance.describeTable(id, describeTableRequest, delimiter, withTableUri, loadDetailedMetadata);
+            DescribeTableResponse result = apiInstance.describeTable(id, describeTableRequest, delimiter, withTableUri, loadDetailedMetadata, checkDeclared);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TableApi#describeTable");
@@ -1758,6 +1763,7 @@ public class Example {
 | **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
 | **withTableUri** | **Boolean**| Whether to include the table URI in the response | [optional] [default to false] |
 | **loadDetailedMetadata** | **Boolean**| Whether to load detailed metadata that requires opening the dataset. When false (default), only &#x60;location&#x60; is required in the response. When true, the response includes additional metadata such as &#x60;version&#x60;, &#x60;schema&#x60;, and &#x60;stats&#x60;.  | [optional] [default to false] |
+| **checkDeclared** | **Boolean**| Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for &#x60;is_only_declared&#x60; unless another option such as &#x60;load_detailed_metadata&#x60; requires the check.  | [optional] [default to false] |
 
 ### Return type
 
@@ -2517,11 +2523,11 @@ public class Example {
 
 ## listAllTables
 
-> ListTablesResponse listAllTables(delimiter, pageToken, limit)
+> ListTablesResponse listAllTables(delimiter, pageToken, limit, includeDeclared)
 
 List all tables
 
-List all tables across all namespaces.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the &#x60;ListAllTablesRequest&#x60; information in the following way: - &#x60;page_token&#x60;: pass through query parameter of the same name - &#x60;limit&#x60;: pass through query parameter of the same name - &#x60;delimiter&#x60;: pass through query parameter of the same name 
+List all tables across all namespaces.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the &#x60;ListAllTablesRequest&#x60; information in the following way: - &#x60;page_token&#x60;: pass through query parameter of the same name - &#x60;limit&#x60;: pass through query parameter of the same name - &#x60;delimiter&#x60;: pass through query parameter of the same name - &#x60;include_declared&#x60;: pass through query parameter of the same name 
 
 ### Example
 
@@ -2557,8 +2563,9 @@ public class Example {
         String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         String pageToken = "pageToken_example"; // String | Pagination token from a previous request
         Integer limit = 56; // Integer | Maximum number of items to return
+        Boolean includeDeclared = true; // Boolean | When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. 
         try {
-            ListTablesResponse result = apiInstance.listAllTables(delimiter, pageToken, limit);
+            ListTablesResponse result = apiInstance.listAllTables(delimiter, pageToken, limit, includeDeclared);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TableApi#listAllTables");
@@ -2579,6 +2586,7 @@ public class Example {
 | **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
 | **pageToken** | **String**| Pagination token from a previous request | [optional] |
 | **limit** | **Integer**| Maximum number of items to return | [optional] |
+| **includeDeclared** | **Boolean**| When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned.  | [optional] [default to true] |
 
 ### Return type
 
@@ -2886,11 +2894,11 @@ public class Example {
 
 ## listTables
 
-> ListTablesResponse listTables(id, delimiter, pageToken, limit)
+> ListTablesResponse listTables(id, delimiter, pageToken, limit, includeDeclared)
 
 List tables in a namespace
 
-List all child table names of the parent namespace &#x60;id&#x60;.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the &#x60;ListTablesRequest&#x60; information in the following way: - &#x60;id&#x60;: pass through path parameter of the same name - &#x60;page_token&#x60;: pass through query parameter of the same name - &#x60;limit&#x60;: pass through query parameter of the same name 
+List all child table names of the parent namespace &#x60;id&#x60;.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the &#x60;ListTablesRequest&#x60; information in the following way: - &#x60;id&#x60;: pass through path parameter of the same name - &#x60;page_token&#x60;: pass through query parameter of the same name - &#x60;limit&#x60;: pass through query parameter of the same name - &#x60;include_declared&#x60;: pass through query parameter of the same name 
 
 ### Example
 
@@ -2927,8 +2935,9 @@ public class Example {
         String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         String pageToken = "pageToken_example"; // String | Pagination token from a previous request
         Integer limit = 56; // Integer | Maximum number of items to return
+        Boolean includeDeclared = true; // Boolean | When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. 
         try {
-            ListTablesResponse result = apiInstance.listTables(id, delimiter, pageToken, limit);
+            ListTablesResponse result = apiInstance.listTables(id, delimiter, pageToken, limit, includeDeclared);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TableApi#listTables");
@@ -2950,6 +2959,7 @@ public class Example {
 | **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
 | **pageToken** | **String**| Pagination token from a previous request | [optional] |
 | **limit** | **Integer**| Maximum number of items to return | [optional] |
+| **includeDeclared** | **Boolean**| When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned.  | [optional] [default to true] |
 
 ### Return type
 

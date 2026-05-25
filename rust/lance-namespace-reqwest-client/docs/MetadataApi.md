@@ -10,7 +10,6 @@ Method | HTTP request | Description
 [**batch_commit_tables**](MetadataApi.md#batch_commit_tables) | **POST** /v1/table/batch-commit | Atomically commit a batch of mixed table operations
 [**batch_create_table_versions**](MetadataApi.md#batch_create_table_versions) | **POST** /v1/table/version/batch-create | Atomically create versions for multiple tables
 [**batch_delete_table_versions**](MetadataApi.md#batch_delete_table_versions) | **POST** /v1/table/{id}/version/delete | Delete table version records
-[**create_empty_table**](MetadataApi.md#create_empty_table) | **POST** /v1/table/{id}/create-empty | Create an empty table
 [**create_namespace**](MetadataApi.md#create_namespace) | **POST** /v1/namespace/{id}/create | Create a new namespace
 [**create_table_index**](MetadataApi.md#create_table_index) | **POST** /v1/table/{id}/create_index | Create an index on a table
 [**create_table_scalar_index**](MetadataApi.md#create_table_scalar_index) | **POST** /v1/table/{id}/create_scalar_index | Create a scalar index on a table
@@ -221,38 +220,6 @@ Name | Type | Description  | Required | Notes
 ### Return type
 
 [**models::BatchDeleteTableVersionsResponse**](BatchDeleteTableVersionsResponse.md)
-
-### Authorization
-
-[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
-
-### HTTP request headers
-
-- **Content-Type**: application/json
-- **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-
-## create_empty_table
-
-> models::CreateEmptyTableResponse create_empty_table(id, create_empty_table_request, delimiter)
-Create an empty table
-
-Create an empty table with the given name without touching storage. This is a metadata-only operation that records the table existence and sets up aspects like access control.  For DirectoryNamespace implementation, this creates a `.lance-reserved` file in the table directory to mark the table's existence without creating actual Lance data files.  **Deprecated**: Use `DeclareTable` instead. 
-
-### Parameters
-
-
-Name | Type | Description  | Required | Notes
-------------- | ------------- | ------------- | ------------- | -------------
-**id** | **String** | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  | [required] |
-**create_empty_table_request** | [**CreateEmptyTableRequest**](CreateEmptyTableRequest.md) |  | [required] |
-**delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
-
-### Return type
-
-[**models::CreateEmptyTableResponse**](CreateEmptyTableResponse.md)
 
 ### Authorization
 
@@ -556,10 +523,10 @@ Name | Type | Description  | Required | Notes
 
 ## describe_table
 
-> models::DescribeTableResponse describe_table(id, describe_table_request, delimiter, with_table_uri, load_detailed_metadata)
+> models::DescribeTableResponse describe_table(id, describe_table_request, delimiter, with_table_uri, load_detailed_metadata, check_declared)
 Describe information of a table
 
-Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri` and `load_detailed_metadata` as query parameters instead of in the request body. 
+Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri`, `load_detailed_metadata`, and `check_declared` as query parameters instead of in the request body. 
 
 ### Parameters
 
@@ -571,6 +538,7 @@ Name | Type | Description  | Required | Notes
 **delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
 **with_table_uri** | Option<**bool**> | Whether to include the table URI in the response |  |[default to false]
 **load_detailed_metadata** | Option<**bool**> | Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`.  |  |[default to false]
+**check_declared** | Option<**bool**> | Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check.  |  |[default to false]
 
 ### Return type
 
@@ -978,10 +946,10 @@ Name | Type | Description  | Required | Notes
 
 ## list_tables
 
-> models::ListTablesResponse list_tables(id, delimiter, page_token, limit)
+> models::ListTablesResponse list_tables(id, delimiter, page_token, limit, include_declared)
 List tables in a namespace
 
-List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
+List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
 
 ### Parameters
 
@@ -992,6 +960,7 @@ Name | Type | Description  | Required | Notes
 **delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
 **page_token** | Option<**String**> | Pagination token from a previous request |  |
 **limit** | Option<**i32**> | Maximum number of items to return |  |
+**include_declared** | Option<**bool**> | When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned.  |  |[default to true]
 
 ### Return type
 

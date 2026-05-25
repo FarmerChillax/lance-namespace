@@ -6,10 +6,14 @@ All URIs are relative to *http://localhost:2333*
 |------------- | ------------- | -------------|
 | [**alterTableAddColumns**](DataApi.md#alterTableAddColumns) | **POST** /v1/table/{id}/add_columns | Add new columns to table schema |
 | [**alterTableAddColumnsWithHttpInfo**](DataApi.md#alterTableAddColumnsWithHttpInfo) | **POST** /v1/table/{id}/add_columns | Add new columns to table schema |
+| [**alterTableBackfillColumns**](DataApi.md#alterTableBackfillColumns) | **POST** /v1/table/{id}/backfill_column | Trigger an async column backfill job |
+| [**alterTableBackfillColumnsWithHttpInfo**](DataApi.md#alterTableBackfillColumnsWithHttpInfo) | **POST** /v1/table/{id}/backfill_column | Trigger an async column backfill job |
 | [**analyzeTableQueryPlan**](DataApi.md#analyzeTableQueryPlan) | **POST** /v1/table/{id}/analyze_plan | Analyze query execution plan |
 | [**analyzeTableQueryPlanWithHttpInfo**](DataApi.md#analyzeTableQueryPlanWithHttpInfo) | **POST** /v1/table/{id}/analyze_plan | Analyze query execution plan |
 | [**countTableRows**](DataApi.md#countTableRows) | **POST** /v1/table/{id}/count_rows | Count rows in a table |
 | [**countTableRowsWithHttpInfo**](DataApi.md#countTableRowsWithHttpInfo) | **POST** /v1/table/{id}/count_rows | Count rows in a table |
+| [**createMaterializedView**](DataApi.md#createMaterializedView) | **POST** /v1/materialized_view/{id}/create | Create a materialized view |
+| [**createMaterializedViewWithHttpInfo**](DataApi.md#createMaterializedViewWithHttpInfo) | **POST** /v1/materialized_view/{id}/create | Create a materialized view |
 | [**createTable**](DataApi.md#createTable) | **POST** /v1/table/{id}/create | Create a table with the given name |
 | [**createTableWithHttpInfo**](DataApi.md#createTableWithHttpInfo) | **POST** /v1/table/{id}/create | Create a table with the given name |
 | [**deleteFromTable**](DataApi.md#deleteFromTable) | **POST** /v1/table/{id}/delete | Delete rows from a table |
@@ -22,6 +26,8 @@ All URIs are relative to *http://localhost:2333*
 | [**mergeInsertIntoTableWithHttpInfo**](DataApi.md#mergeInsertIntoTableWithHttpInfo) | **POST** /v1/table/{id}/merge_insert | Merge insert (upsert) records into a table |
 | [**queryTable**](DataApi.md#queryTable) | **POST** /v1/table/{id}/query | Query a table |
 | [**queryTableWithHttpInfo**](DataApi.md#queryTableWithHttpInfo) | **POST** /v1/table/{id}/query | Query a table |
+| [**refreshMaterializedView**](DataApi.md#refreshMaterializedView) | **POST** /v1/materialized_view/{id}/refresh | Trigger an async materialized view refresh |
+| [**refreshMaterializedViewWithHttpInfo**](DataApi.md#refreshMaterializedViewWithHttpInfo) | **POST** /v1/materialized_view/{id}/refresh | Trigger an async materialized view refresh |
 | [**updateTable**](DataApi.md#updateTable) | **POST** /v1/table/{id}/update | Update rows in a table |
 | [**updateTableWithHttpInfo**](DataApi.md#updateTableWithHttpInfo) | **POST** /v1/table/{id}/update | Update rows in a table |
 
@@ -212,6 +218,199 @@ CompletableFuture<ApiResponse<[**AlterTableAddColumnsResponse**](AlterTableAddCo
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | Add columns operation result |  -  |
+| **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
+| **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
+| **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
+| **404** | A server-side problem that means can not find the specified resource. |  -  |
+| **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
+| **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
+
+
+## alterTableBackfillColumns
+
+> CompletableFuture<AlterTableBackfillColumnsResponse> alterTableBackfillColumns(id, alterTableBackfillColumnsRequest, delimiter)
+
+Trigger an async column backfill job
+
+Trigger an asynchronous backfill job for a computed column on table &#x60;id&#x60;. The column must be a virtual (UDF-backed) column. Returns a job ID for tracking. 
+
+### Example
+
+```java
+// Import classes:
+import org.lance.namespace.client.async.ApiClient;
+import org.lance.namespace.client.async.ApiException;
+import org.lance.namespace.client.async.Configuration;
+import org.lance.namespace.client.async.auth.*;
+import org.lance.namespace.client.async.models.*;
+import org.lance.namespace.client.async.api.DataApi;
+import java.util.concurrent.CompletableFuture;
+
+public class Example {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath("http://localhost:2333");
+        
+        // Configure OAuth2 access token for authorization: OAuth2
+        OAuth OAuth2 = (OAuth) defaultClient.getAuthentication("OAuth2");
+        OAuth2.setAccessToken("YOUR ACCESS TOKEN");
+
+        // Configure API key authorization: ApiKeyAuth
+        ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+        ApiKeyAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //ApiKeyAuth.setApiKeyPrefix("Token");
+
+        // Configure HTTP bearer authorization: BearerAuth
+        HttpBearerAuth BearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("BearerAuth");
+        BearerAuth.setBearerToken("BEARER TOKEN");
+
+        DataApi apiInstance = new DataApi(defaultClient);
+        String id = "id_example"; // String | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. 
+        AlterTableBackfillColumnsRequest alterTableBackfillColumnsRequest = new AlterTableBackfillColumnsRequest(); // AlterTableBackfillColumnsRequest | 
+        String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        try {
+            CompletableFuture<AlterTableBackfillColumnsResponse> result = apiInstance.alterTableBackfillColumns(id, alterTableBackfillColumnsRequest, delimiter);
+            System.out.println(result.get());
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DataApi#alterTableBackfillColumns");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | **String**| &#x60;string identifier&#x60; of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the root namespace.  | |
+| **alterTableBackfillColumnsRequest** | [**AlterTableBackfillColumnsRequest**](AlterTableBackfillColumnsRequest.md)|  | |
+| **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
+
+### Return type
+
+CompletableFuture<[**AlterTableBackfillColumnsResponse**](AlterTableBackfillColumnsResponse.md)>
+
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **202** | Backfill job accepted |  -  |
+| **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
+| **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
+| **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
+| **404** | A server-side problem that means can not find the specified resource. |  -  |
+| **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
+| **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
+
+## alterTableBackfillColumnsWithHttpInfo
+
+> CompletableFuture<ApiResponse<AlterTableBackfillColumnsResponse>> alterTableBackfillColumns alterTableBackfillColumnsWithHttpInfo(id, alterTableBackfillColumnsRequest, delimiter)
+
+Trigger an async column backfill job
+
+Trigger an asynchronous backfill job for a computed column on table &#x60;id&#x60;. The column must be a virtual (UDF-backed) column. Returns a job ID for tracking. 
+
+### Example
+
+```java
+// Import classes:
+import org.lance.namespace.client.async.ApiClient;
+import org.lance.namespace.client.async.ApiException;
+import org.lance.namespace.client.async.ApiResponse;
+import org.lance.namespace.client.async.Configuration;
+import org.lance.namespace.client.async.auth.*;
+import org.lance.namespace.client.async.models.*;
+import org.lance.namespace.client.async.api.DataApi;
+import java.util.concurrent.CompletableFuture;
+
+public class Example {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath("http://localhost:2333");
+        
+        // Configure OAuth2 access token for authorization: OAuth2
+        OAuth OAuth2 = (OAuth) defaultClient.getAuthentication("OAuth2");
+        OAuth2.setAccessToken("YOUR ACCESS TOKEN");
+
+        // Configure API key authorization: ApiKeyAuth
+        ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+        ApiKeyAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //ApiKeyAuth.setApiKeyPrefix("Token");
+
+        // Configure HTTP bearer authorization: BearerAuth
+        HttpBearerAuth BearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("BearerAuth");
+        BearerAuth.setBearerToken("BEARER TOKEN");
+
+        DataApi apiInstance = new DataApi(defaultClient);
+        String id = "id_example"; // String | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. 
+        AlterTableBackfillColumnsRequest alterTableBackfillColumnsRequest = new AlterTableBackfillColumnsRequest(); // AlterTableBackfillColumnsRequest | 
+        String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        try {
+            CompletableFuture<ApiResponse<AlterTableBackfillColumnsResponse>> response = apiInstance.alterTableBackfillColumnsWithHttpInfo(id, alterTableBackfillColumnsRequest, delimiter);
+            System.out.println("Status code: " + response.get().getStatusCode());
+            System.out.println("Response headers: " + response.get().getHeaders());
+            System.out.println("Response body: " + response.get().getData());
+        } catch (InterruptedException | ExecutionException e) {
+            ApiException apiException = (ApiException)e.getCause();
+            System.err.println("Exception when calling DataApi#alterTableBackfillColumns");
+            System.err.println("Status code: " + apiException.getCode());
+            System.err.println("Response headers: " + apiException.getResponseHeaders());
+            System.err.println("Reason: " + apiException.getResponseBody());
+            e.printStackTrace();
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DataApi#alterTableBackfillColumns");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            System.err.println("Reason: " + e.getResponseBody());
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | **String**| &#x60;string identifier&#x60; of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the root namespace.  | |
+| **alterTableBackfillColumnsRequest** | [**AlterTableBackfillColumnsRequest**](AlterTableBackfillColumnsRequest.md)|  | |
+| **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
+
+### Return type
+
+CompletableFuture<ApiResponse<[**AlterTableBackfillColumnsResponse**](AlterTableBackfillColumnsResponse.md)>>
+
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **202** | Backfill job accepted |  -  |
 | **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
 | **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
 | **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
@@ -606,13 +805,208 @@ CompletableFuture<ApiResponse<**Long**>>
 | **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
 
 
+## createMaterializedView
+
+> CompletableFuture<CreateMaterializedViewResponse> createMaterializedView(id, createMaterializedViewRequest, delimiter)
+
+Create a materialized view
+
+Create a materialized view at identifier &#x60;id&#x60;. The view may be query-backed, UDTF-backed, or chunker-backed, controlled by the &#x60;kind&#x60; discriminator. 
+
+### Example
+
+```java
+// Import classes:
+import org.lance.namespace.client.async.ApiClient;
+import org.lance.namespace.client.async.ApiException;
+import org.lance.namespace.client.async.Configuration;
+import org.lance.namespace.client.async.auth.*;
+import org.lance.namespace.client.async.models.*;
+import org.lance.namespace.client.async.api.DataApi;
+import java.util.concurrent.CompletableFuture;
+
+public class Example {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath("http://localhost:2333");
+        
+        // Configure OAuth2 access token for authorization: OAuth2
+        OAuth OAuth2 = (OAuth) defaultClient.getAuthentication("OAuth2");
+        OAuth2.setAccessToken("YOUR ACCESS TOKEN");
+
+        // Configure API key authorization: ApiKeyAuth
+        ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+        ApiKeyAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //ApiKeyAuth.setApiKeyPrefix("Token");
+
+        // Configure HTTP bearer authorization: BearerAuth
+        HttpBearerAuth BearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("BearerAuth");
+        BearerAuth.setBearerToken("BEARER TOKEN");
+
+        DataApi apiInstance = new DataApi(defaultClient);
+        String id = "id_example"; // String | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. 
+        CreateMaterializedViewRequest createMaterializedViewRequest = new CreateMaterializedViewRequest(); // CreateMaterializedViewRequest | 
+        String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        try {
+            CompletableFuture<CreateMaterializedViewResponse> result = apiInstance.createMaterializedView(id, createMaterializedViewRequest, delimiter);
+            System.out.println(result.get());
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DataApi#createMaterializedView");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | **String**| &#x60;string identifier&#x60; of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the root namespace.  | |
+| **createMaterializedViewRequest** | [**CreateMaterializedViewRequest**](CreateMaterializedViewRequest.md)|  | |
+| **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
+
+### Return type
+
+CompletableFuture<[**CreateMaterializedViewResponse**](CreateMaterializedViewResponse.md)>
+
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **201** | Materialized view created |  -  |
+| **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
+| **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
+| **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
+| **404** | A server-side problem that means can not find the specified resource. |  -  |
+| **409** | The request conflicts with the current state of the target resource. |  -  |
+| **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
+| **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
+
+## createMaterializedViewWithHttpInfo
+
+> CompletableFuture<ApiResponse<CreateMaterializedViewResponse>> createMaterializedView createMaterializedViewWithHttpInfo(id, createMaterializedViewRequest, delimiter)
+
+Create a materialized view
+
+Create a materialized view at identifier &#x60;id&#x60;. The view may be query-backed, UDTF-backed, or chunker-backed, controlled by the &#x60;kind&#x60; discriminator. 
+
+### Example
+
+```java
+// Import classes:
+import org.lance.namespace.client.async.ApiClient;
+import org.lance.namespace.client.async.ApiException;
+import org.lance.namespace.client.async.ApiResponse;
+import org.lance.namespace.client.async.Configuration;
+import org.lance.namespace.client.async.auth.*;
+import org.lance.namespace.client.async.models.*;
+import org.lance.namespace.client.async.api.DataApi;
+import java.util.concurrent.CompletableFuture;
+
+public class Example {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath("http://localhost:2333");
+        
+        // Configure OAuth2 access token for authorization: OAuth2
+        OAuth OAuth2 = (OAuth) defaultClient.getAuthentication("OAuth2");
+        OAuth2.setAccessToken("YOUR ACCESS TOKEN");
+
+        // Configure API key authorization: ApiKeyAuth
+        ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+        ApiKeyAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //ApiKeyAuth.setApiKeyPrefix("Token");
+
+        // Configure HTTP bearer authorization: BearerAuth
+        HttpBearerAuth BearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("BearerAuth");
+        BearerAuth.setBearerToken("BEARER TOKEN");
+
+        DataApi apiInstance = new DataApi(defaultClient);
+        String id = "id_example"; // String | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. 
+        CreateMaterializedViewRequest createMaterializedViewRequest = new CreateMaterializedViewRequest(); // CreateMaterializedViewRequest | 
+        String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        try {
+            CompletableFuture<ApiResponse<CreateMaterializedViewResponse>> response = apiInstance.createMaterializedViewWithHttpInfo(id, createMaterializedViewRequest, delimiter);
+            System.out.println("Status code: " + response.get().getStatusCode());
+            System.out.println("Response headers: " + response.get().getHeaders());
+            System.out.println("Response body: " + response.get().getData());
+        } catch (InterruptedException | ExecutionException e) {
+            ApiException apiException = (ApiException)e.getCause();
+            System.err.println("Exception when calling DataApi#createMaterializedView");
+            System.err.println("Status code: " + apiException.getCode());
+            System.err.println("Response headers: " + apiException.getResponseHeaders());
+            System.err.println("Reason: " + apiException.getResponseBody());
+            e.printStackTrace();
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DataApi#createMaterializedView");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            System.err.println("Reason: " + e.getResponseBody());
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | **String**| &#x60;string identifier&#x60; of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the root namespace.  | |
+| **createMaterializedViewRequest** | [**CreateMaterializedViewRequest**](CreateMaterializedViewRequest.md)|  | |
+| **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
+
+### Return type
+
+CompletableFuture<ApiResponse<[**CreateMaterializedViewResponse**](CreateMaterializedViewResponse.md)>>
+
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **201** | Materialized view created |  -  |
+| **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
+| **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
+| **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
+| **404** | A server-side problem that means can not find the specified resource. |  -  |
+| **409** | The request conflicts with the current state of the target resource. |  -  |
+| **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
+| **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
+
+
 ## createTable
 
-> CompletableFuture<CreateTableResponse> createTable(id, body, delimiter, mode)
+> CompletableFuture<CreateTableResponse> createTable(id, body, delimiter, mode, properties, storageOptions)
 
 Create a table with the given name
 
-Create table &#x60;id&#x60; in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the &#x60;CreateTableRequest&#x60; information in the following way: - &#x60;id&#x60;: pass through path parameter of the same name - &#x60;mode&#x60;: pass through query parameter of the same name 
+Create table &#x60;id&#x60; in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the &#x60;CreateTableRequest&#x60; information in the following way: - &#x60;id&#x60;: pass through path parameter of the same name - &#x60;mode&#x60;: pass through query parameter of the same name - &#x60;properties&#x60;: serialize as a single JSON-encoded query parameter such as   &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;; these are business logic properties   managed by the namespace implementation outside Lance context - &#x60;storage_options&#x60;: serialize as a single JSON-encoded query parameter such as   &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;; these configure   write-time overrides for data and metadata written during table creation 
 
 ### Example
 
@@ -650,8 +1044,10 @@ public class Example {
         byte[] body = null; // byte[] | Arrow IPC data
         String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         String mode = "mode_example"; // String | 
+        String properties = "properties_example"; // String | Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as `properties={\"user\":\"alice\",\"team\":\"eng\"}`. 
+        String storageOptions = "storageOptions_example"; // String | Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`. 
         try {
-            CompletableFuture<CreateTableResponse> result = apiInstance.createTable(id, body, delimiter, mode);
+            CompletableFuture<CreateTableResponse> result = apiInstance.createTable(id, body, delimiter, mode, properties, storageOptions);
             System.out.println(result.get());
         } catch (ApiException e) {
             System.err.println("Exception when calling DataApi#createTable");
@@ -673,6 +1069,8 @@ public class Example {
 | **body** | **byte[]**| Arrow IPC data | |
 | **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
 | **mode** | **String**|  | [optional] |
+| **properties** | **String**| Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;.  | [optional] |
+| **storageOptions** | **String**| Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;.  | [optional] |
 
 ### Return type
 
@@ -696,16 +1094,17 @@ CompletableFuture<[**CreateTableResponse**](CreateTableResponse.md)>
 | **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
 | **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
 | **404** | A server-side problem that means can not find the specified resource. |  -  |
+| **409** | The request conflicts with the current state of the target resource. |  -  |
 | **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
 | **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
 
 ## createTableWithHttpInfo
 
-> CompletableFuture<ApiResponse<CreateTableResponse>> createTable createTableWithHttpInfo(id, body, delimiter, mode)
+> CompletableFuture<ApiResponse<CreateTableResponse>> createTable createTableWithHttpInfo(id, body, delimiter, mode, properties, storageOptions)
 
 Create a table with the given name
 
-Create table &#x60;id&#x60; in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the &#x60;CreateTableRequest&#x60; information in the following way: - &#x60;id&#x60;: pass through path parameter of the same name - &#x60;mode&#x60;: pass through query parameter of the same name 
+Create table &#x60;id&#x60; in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the &#x60;CreateTableRequest&#x60; information in the following way: - &#x60;id&#x60;: pass through path parameter of the same name - &#x60;mode&#x60;: pass through query parameter of the same name - &#x60;properties&#x60;: serialize as a single JSON-encoded query parameter such as   &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;; these are business logic properties   managed by the namespace implementation outside Lance context - &#x60;storage_options&#x60;: serialize as a single JSON-encoded query parameter such as   &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;; these configure   write-time overrides for data and metadata written during table creation 
 
 ### Example
 
@@ -744,8 +1143,10 @@ public class Example {
         byte[] body = null; // byte[] | Arrow IPC data
         String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         String mode = "mode_example"; // String | 
+        String properties = "properties_example"; // String | Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as `properties={\"user\":\"alice\",\"team\":\"eng\"}`. 
+        String storageOptions = "storageOptions_example"; // String | Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`. 
         try {
-            CompletableFuture<ApiResponse<CreateTableResponse>> response = apiInstance.createTableWithHttpInfo(id, body, delimiter, mode);
+            CompletableFuture<ApiResponse<CreateTableResponse>> response = apiInstance.createTableWithHttpInfo(id, body, delimiter, mode, properties, storageOptions);
             System.out.println("Status code: " + response.get().getStatusCode());
             System.out.println("Response headers: " + response.get().getHeaders());
             System.out.println("Response body: " + response.get().getData());
@@ -776,6 +1177,8 @@ public class Example {
 | **body** | **byte[]**| Arrow IPC data | |
 | **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
 | **mode** | **String**|  | [optional] |
+| **properties** | **String**| Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;.  | [optional] |
+| **storageOptions** | **String**| Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;.  | [optional] |
 
 ### Return type
 
@@ -799,6 +1202,7 @@ CompletableFuture<ApiResponse<[**CreateTableResponse**](CreateTableResponse.md)>
 | **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
 | **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
 | **404** | A server-side problem that means can not find the specified resource. |  -  |
+| **409** | The request conflicts with the current state of the target resource. |  -  |
 | **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
 | **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
 
@@ -1796,6 +2200,199 @@ CompletableFuture<ApiResponse<**byte[]**>>
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | Query results in Arrow IPC file format |  -  |
+| **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
+| **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
+| **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
+| **404** | A server-side problem that means can not find the specified resource. |  -  |
+| **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
+| **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
+
+
+## refreshMaterializedView
+
+> CompletableFuture<RefreshMaterializedViewResponse> refreshMaterializedView(id, delimiter, refreshMaterializedViewRequest)
+
+Trigger an async materialized view refresh
+
+Trigger an asynchronous refresh job for materialized view &#x60;id&#x60;. Returns a job ID for tracking. 
+
+### Example
+
+```java
+// Import classes:
+import org.lance.namespace.client.async.ApiClient;
+import org.lance.namespace.client.async.ApiException;
+import org.lance.namespace.client.async.Configuration;
+import org.lance.namespace.client.async.auth.*;
+import org.lance.namespace.client.async.models.*;
+import org.lance.namespace.client.async.api.DataApi;
+import java.util.concurrent.CompletableFuture;
+
+public class Example {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath("http://localhost:2333");
+        
+        // Configure OAuth2 access token for authorization: OAuth2
+        OAuth OAuth2 = (OAuth) defaultClient.getAuthentication("OAuth2");
+        OAuth2.setAccessToken("YOUR ACCESS TOKEN");
+
+        // Configure API key authorization: ApiKeyAuth
+        ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+        ApiKeyAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //ApiKeyAuth.setApiKeyPrefix("Token");
+
+        // Configure HTTP bearer authorization: BearerAuth
+        HttpBearerAuth BearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("BearerAuth");
+        BearerAuth.setBearerToken("BEARER TOKEN");
+
+        DataApi apiInstance = new DataApi(defaultClient);
+        String id = "id_example"; // String | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. 
+        String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        RefreshMaterializedViewRequest refreshMaterializedViewRequest = new RefreshMaterializedViewRequest(); // RefreshMaterializedViewRequest | 
+        try {
+            CompletableFuture<RefreshMaterializedViewResponse> result = apiInstance.refreshMaterializedView(id, delimiter, refreshMaterializedViewRequest);
+            System.out.println(result.get());
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DataApi#refreshMaterializedView");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | **String**| &#x60;string identifier&#x60; of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the root namespace.  | |
+| **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
+| **refreshMaterializedViewRequest** | [**RefreshMaterializedViewRequest**](RefreshMaterializedViewRequest.md)|  | [optional] |
+
+### Return type
+
+CompletableFuture<[**RefreshMaterializedViewResponse**](RefreshMaterializedViewResponse.md)>
+
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **202** | Refresh job accepted |  -  |
+| **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
+| **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
+| **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
+| **404** | A server-side problem that means can not find the specified resource. |  -  |
+| **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
+| **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
+
+## refreshMaterializedViewWithHttpInfo
+
+> CompletableFuture<ApiResponse<RefreshMaterializedViewResponse>> refreshMaterializedView refreshMaterializedViewWithHttpInfo(id, delimiter, refreshMaterializedViewRequest)
+
+Trigger an async materialized view refresh
+
+Trigger an asynchronous refresh job for materialized view &#x60;id&#x60;. Returns a job ID for tracking. 
+
+### Example
+
+```java
+// Import classes:
+import org.lance.namespace.client.async.ApiClient;
+import org.lance.namespace.client.async.ApiException;
+import org.lance.namespace.client.async.ApiResponse;
+import org.lance.namespace.client.async.Configuration;
+import org.lance.namespace.client.async.auth.*;
+import org.lance.namespace.client.async.models.*;
+import org.lance.namespace.client.async.api.DataApi;
+import java.util.concurrent.CompletableFuture;
+
+public class Example {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath("http://localhost:2333");
+        
+        // Configure OAuth2 access token for authorization: OAuth2
+        OAuth OAuth2 = (OAuth) defaultClient.getAuthentication("OAuth2");
+        OAuth2.setAccessToken("YOUR ACCESS TOKEN");
+
+        // Configure API key authorization: ApiKeyAuth
+        ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+        ApiKeyAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //ApiKeyAuth.setApiKeyPrefix("Token");
+
+        // Configure HTTP bearer authorization: BearerAuth
+        HttpBearerAuth BearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("BearerAuth");
+        BearerAuth.setBearerToken("BEARER TOKEN");
+
+        DataApi apiInstance = new DataApi(defaultClient);
+        String id = "id_example"; // String | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. 
+        String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        RefreshMaterializedViewRequest refreshMaterializedViewRequest = new RefreshMaterializedViewRequest(); // RefreshMaterializedViewRequest | 
+        try {
+            CompletableFuture<ApiResponse<RefreshMaterializedViewResponse>> response = apiInstance.refreshMaterializedViewWithHttpInfo(id, delimiter, refreshMaterializedViewRequest);
+            System.out.println("Status code: " + response.get().getStatusCode());
+            System.out.println("Response headers: " + response.get().getHeaders());
+            System.out.println("Response body: " + response.get().getData());
+        } catch (InterruptedException | ExecutionException e) {
+            ApiException apiException = (ApiException)e.getCause();
+            System.err.println("Exception when calling DataApi#refreshMaterializedView");
+            System.err.println("Status code: " + apiException.getCode());
+            System.err.println("Response headers: " + apiException.getResponseHeaders());
+            System.err.println("Reason: " + apiException.getResponseBody());
+            e.printStackTrace();
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DataApi#refreshMaterializedView");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            System.err.println("Reason: " + e.getResponseBody());
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | **String**| &#x60;string identifier&#x60; of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the root namespace.  | |
+| **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
+| **refreshMaterializedViewRequest** | [**RefreshMaterializedViewRequest**](RefreshMaterializedViewRequest.md)|  | [optional] |
+
+### Return type
+
+CompletableFuture<ApiResponse<[**RefreshMaterializedViewResponse**](RefreshMaterializedViewResponse.md)>>
+
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **202** | Refresh job accepted |  -  |
 | **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
 | **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
 | **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |

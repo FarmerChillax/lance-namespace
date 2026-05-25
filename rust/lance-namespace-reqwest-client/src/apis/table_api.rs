@@ -41,6 +41,19 @@ pub enum AlterTableAlterColumnsError {
     UnknownValue(serde_json::Value),
 }
 
+/// struct for typed errors of method [`alter_table_backfill_columns`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum AlterTableBackfillColumnsError {
+    Status400(models::ErrorResponse),
+    Status401(models::ErrorResponse),
+    Status403(models::ErrorResponse),
+    Status404(models::ErrorResponse),
+    Status503(models::ErrorResponse),
+    Status5XX(models::ErrorResponse),
+    UnknownValue(serde_json::Value),
+}
+
 /// struct for typed errors of method [`alter_table_drop_columns`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -121,20 +134,6 @@ pub enum CountTableRowsError {
     UnknownValue(serde_json::Value),
 }
 
-/// struct for typed errors of method [`create_empty_table`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum CreateEmptyTableError {
-    Status400(models::ErrorResponse),
-    Status401(models::ErrorResponse),
-    Status403(models::ErrorResponse),
-    Status404(models::ErrorResponse),
-    Status409(models::ErrorResponse),
-    Status503(models::ErrorResponse),
-    Status5XX(models::ErrorResponse),
-    UnknownValue(serde_json::Value),
-}
-
 /// struct for typed errors of method [`create_table`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -143,6 +142,7 @@ pub enum CreateTableError {
     Status401(models::ErrorResponse),
     Status403(models::ErrorResponse),
     Status404(models::ErrorResponse),
+    Status409(models::ErrorResponse),
     Status503(models::ErrorResponse),
     Status5XX(models::ErrorResponse),
     UnknownValue(serde_json::Value),
@@ -672,6 +672,63 @@ pub async fn alter_table_alter_columns(configuration: &configuration::Configurat
     }
 }
 
+/// Trigger an asynchronous backfill job for a computed column on table `id`. The column must be a virtual (UDF-backed) column. Returns a job ID for tracking. 
+pub async fn alter_table_backfill_columns(configuration: &configuration::Configuration, id: &str, alter_table_backfill_columns_request: models::AlterTableBackfillColumnsRequest, delimiter: Option<&str>) -> Result<models::AlterTableBackfillColumnsResponse, Error<AlterTableBackfillColumnsError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_id = id;
+    let p_alter_table_backfill_columns_request = alter_table_backfill_columns_request;
+    let p_delimiter = delimiter;
+
+    let uri_str = format!("{}/v1/table/{id}/backfill_column", configuration.base_path, id=crate::apis::urlencode(p_id));
+    let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref param_value) = p_delimiter {
+        req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    if let Some(ref apikey) = configuration.api_key {
+        let key = apikey.key.clone();
+        let value = match apikey.prefix {
+            Some(ref prefix) => format!("{} {}", prefix, key),
+            None => key,
+        };
+        req_builder = req_builder.header("x-api-key", value);
+    };
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_alter_table_backfill_columns_request);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::AlterTableBackfillColumnsResponse`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::AlterTableBackfillColumnsResponse`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<AlterTableBackfillColumnsError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
 /// Remove specified columns from table `id`. 
 pub async fn alter_table_drop_columns(configuration: &configuration::Configuration, id: &str, alter_table_drop_columns_request: models::AlterTableDropColumnsRequest, delimiter: Option<&str>) -> Result<models::AlterTableDropColumnsResponse, Error<AlterTableDropColumnsError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -1012,70 +1069,15 @@ pub async fn count_table_rows(configuration: &configuration::Configuration, id: 
     }
 }
 
-/// Create an empty table with the given name without touching storage. This is a metadata-only operation that records the table existence and sets up aspects like access control.  For DirectoryNamespace implementation, this creates a `.lance-reserved` file in the table directory to mark the table's existence without creating actual Lance data files.  **Deprecated**: Use `DeclareTable` instead. 
-pub async fn create_empty_table(configuration: &configuration::Configuration, id: &str, create_empty_table_request: models::CreateEmptyTableRequest, delimiter: Option<&str>) -> Result<models::CreateEmptyTableResponse, Error<CreateEmptyTableError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_create_empty_table_request = create_empty_table_request;
-    let p_delimiter = delimiter;
-
-    let uri_str = format!("{}/v1/table/{id}/create-empty", configuration.base_path, id=crate::apis::urlencode(p_id));
-    let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
-
-    if let Some(ref param_value) = p_delimiter {
-        req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
-    }
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
-    if let Some(ref apikey) = configuration.api_key {
-        let key = apikey.key.clone();
-        let value = match apikey.prefix {
-            Some(ref prefix) => format!("{} {}", prefix, key),
-            None => key,
-        };
-        req_builder = req_builder.header("x-api-key", value);
-    };
-    if let Some(ref token) = configuration.bearer_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
-    req_builder = req_builder.json(&p_create_empty_table_request);
-
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
-
-    let status = resp.status();
-    let content_type = resp
-        .headers()
-        .get("content-type")
-        .and_then(|v| v.to_str().ok())
-        .unwrap_or("application/octet-stream");
-    let content_type = super::ContentType::from(content_type);
-
-    if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
-        match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::CreateEmptyTableResponse`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::CreateEmptyTableResponse`")))),
-        }
-    } else {
-        let content = resp.text().await?;
-        let entity: Option<CreateEmptyTableError> = serde_json::from_str(&content).ok();
-        Err(Error::ResponseError(ResponseContent { status, content, entity }))
-    }
-}
-
-/// Create table `id` in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `CreateTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
-pub async fn create_table(configuration: &configuration::Configuration, id: &str, body: Vec<u8>, delimiter: Option<&str>, mode: Option<&str>) -> Result<models::CreateTableResponse, Error<CreateTableError>> {
+/// Create table `id` in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `CreateTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name - `properties`: serialize as a single JSON-encoded query parameter such as   `properties={\"user\":\"alice\",\"team\":\"eng\"}`; these are business logic properties   managed by the namespace implementation outside Lance context - `storage_options`: serialize as a single JSON-encoded query parameter such as   `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`; these configure   write-time overrides for data and metadata written during table creation 
+pub async fn create_table(configuration: &configuration::Configuration, id: &str, body: Vec<u8>, delimiter: Option<&str>, mode: Option<&str>, properties: Option<&str>, storage_options: Option<&str>) -> Result<models::CreateTableResponse, Error<CreateTableError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_body = body;
     let p_delimiter = delimiter;
     let p_mode = mode;
+    let p_properties = properties;
+    let p_storage_options = storage_options;
 
     let uri_str = format!("{}/v1/table/{id}/create", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
@@ -1085,6 +1087,12 @@ pub async fn create_table(configuration: &configuration::Configuration, id: &str
     }
     if let Some(ref param_value) = p_mode {
         req_builder = req_builder.query(&[("mode", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_properties {
+        req_builder = req_builder.query(&[("properties", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_storage_options {
+        req_builder = req_builder.query(&[("storage_options", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
@@ -1586,14 +1594,15 @@ pub async fn deregister_table(configuration: &configuration::Configuration, id: 
     }
 }
 
-/// Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri` and `load_detailed_metadata` as query parameters instead of in the request body. 
-pub async fn describe_table(configuration: &configuration::Configuration, id: &str, describe_table_request: models::DescribeTableRequest, delimiter: Option<&str>, with_table_uri: Option<bool>, load_detailed_metadata: Option<bool>) -> Result<models::DescribeTableResponse, Error<DescribeTableError>> {
+/// Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri`, `load_detailed_metadata`, and `check_declared` as query parameters instead of in the request body. 
+pub async fn describe_table(configuration: &configuration::Configuration, id: &str, describe_table_request: models::DescribeTableRequest, delimiter: Option<&str>, with_table_uri: Option<bool>, load_detailed_metadata: Option<bool>, check_declared: Option<bool>) -> Result<models::DescribeTableResponse, Error<DescribeTableError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_describe_table_request = describe_table_request;
     let p_delimiter = delimiter;
     let p_with_table_uri = with_table_uri;
     let p_load_detailed_metadata = load_detailed_metadata;
+    let p_check_declared = check_declared;
 
     let uri_str = format!("{}/v1/table/{id}/describe", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
@@ -1606,6 +1615,9 @@ pub async fn describe_table(configuration: &configuration::Configuration, id: &s
     }
     if let Some(ref param_value) = p_load_detailed_metadata {
         req_builder = req_builder.query(&[("load_detailed_metadata", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_check_declared {
+        req_builder = req_builder.query(&[("check_declared", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
@@ -2109,12 +2121,13 @@ pub async fn insert_into_table(configuration: &configuration::Configuration, id:
     }
 }
 
-/// List all tables across all namespaces.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListAllTablesRequest` information in the following way: - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `delimiter`: pass through query parameter of the same name 
-pub async fn list_all_tables(configuration: &configuration::Configuration, delimiter: Option<&str>, page_token: Option<&str>, limit: Option<i32>) -> Result<models::ListTablesResponse, Error<ListAllTablesError>> {
+/// List all tables across all namespaces.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListAllTablesRequest` information in the following way: - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `delimiter`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
+pub async fn list_all_tables(configuration: &configuration::Configuration, delimiter: Option<&str>, page_token: Option<&str>, limit: Option<i32>, include_declared: Option<bool>) -> Result<models::ListTablesResponse, Error<ListAllTablesError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_delimiter = delimiter;
     let p_page_token = page_token;
     let p_limit = limit;
+    let p_include_declared = include_declared;
 
     let uri_str = format!("{}/v1/table", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -2127,6 +2140,9 @@ pub async fn list_all_tables(configuration: &configuration::Configuration, delim
     }
     if let Some(ref param_value) = p_limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_include_declared {
+        req_builder = req_builder.query(&[("include_declared", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
@@ -2358,13 +2374,14 @@ pub async fn list_table_versions(configuration: &configuration::Configuration, i
     }
 }
 
-/// List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
-pub async fn list_tables(configuration: &configuration::Configuration, id: &str, delimiter: Option<&str>, page_token: Option<&str>, limit: Option<i32>) -> Result<models::ListTablesResponse, Error<ListTablesError>> {
+/// List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
+pub async fn list_tables(configuration: &configuration::Configuration, id: &str, delimiter: Option<&str>, page_token: Option<&str>, limit: Option<i32>, include_declared: Option<bool>) -> Result<models::ListTablesResponse, Error<ListTablesError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_delimiter = delimiter;
     let p_page_token = page_token;
     let p_limit = limit;
+    let p_include_declared = include_declared;
 
     let uri_str = format!("{}/v1/namespace/{id}/table/list", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -2377,6 +2394,9 @@ pub async fn list_tables(configuration: &configuration::Configuration, id: &str,
     }
     if let Some(ref param_value) = p_limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_include_declared {
+        req_builder = req_builder.query(&[("include_declared", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());

@@ -96,20 +96,6 @@ pub enum BatchDeleteTableVersionsError {
     UnknownValue(serde_json::Value),
 }
 
-/// struct for typed errors of method [`create_empty_table`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum CreateEmptyTableError {
-    Status400(models::ErrorResponse),
-    Status401(models::ErrorResponse),
-    Status403(models::ErrorResponse),
-    Status404(models::ErrorResponse),
-    Status409(models::ErrorResponse),
-    Status503(models::ErrorResponse),
-    Status5XX(models::ErrorResponse),
-    UnknownValue(serde_json::Value),
-}
-
 /// struct for typed errors of method [`create_namespace`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -852,63 +838,6 @@ pub async fn batch_delete_table_versions(configuration: &configuration::Configur
     }
 }
 
-/// Create an empty table with the given name without touching storage. This is a metadata-only operation that records the table existence and sets up aspects like access control.  For DirectoryNamespace implementation, this creates a `.lance-reserved` file in the table directory to mark the table's existence without creating actual Lance data files.  **Deprecated**: Use `DeclareTable` instead. 
-pub async fn create_empty_table(configuration: &configuration::Configuration, id: &str, create_empty_table_request: models::CreateEmptyTableRequest, delimiter: Option<&str>) -> Result<models::CreateEmptyTableResponse, Error<CreateEmptyTableError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_create_empty_table_request = create_empty_table_request;
-    let p_delimiter = delimiter;
-
-    let uri_str = format!("{}/v1/table/{id}/create-empty", configuration.base_path, id=crate::apis::urlencode(p_id));
-    let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
-
-    if let Some(ref param_value) = p_delimiter {
-        req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
-    }
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
-    if let Some(ref apikey) = configuration.api_key {
-        let key = apikey.key.clone();
-        let value = match apikey.prefix {
-            Some(ref prefix) => format!("{} {}", prefix, key),
-            None => key,
-        };
-        req_builder = req_builder.header("x-api-key", value);
-    };
-    if let Some(ref token) = configuration.bearer_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
-    req_builder = req_builder.json(&p_create_empty_table_request);
-
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
-
-    let status = resp.status();
-    let content_type = resp
-        .headers()
-        .get("content-type")
-        .and_then(|v| v.to_str().ok())
-        .unwrap_or("application/octet-stream");
-    let content_type = super::ContentType::from(content_type);
-
-    if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
-        match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::CreateEmptyTableResponse`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::CreateEmptyTableResponse`")))),
-        }
-    } else {
-        let content = resp.text().await?;
-        let entity: Option<CreateEmptyTableError> = serde_json::from_str(&content).ok();
-        Err(Error::ResponseError(ResponseContent { status, content, entity }))
-    }
-}
-
 /// Create new namespace `id`.  During the creation process, the implementation may modify user-provided `properties`, such as adding additional properties like `created_at` to user-provided properties, omitting any specific property, or performing actions based on any property value. 
 pub async fn create_namespace(configuration: &configuration::Configuration, id: &str, create_namespace_request: models::CreateNamespaceRequest, delimiter: Option<&str>) -> Result<models::CreateNamespaceResponse, Error<CreateNamespaceError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -1422,14 +1351,15 @@ pub async fn describe_namespace(configuration: &configuration::Configuration, id
     }
 }
 
-/// Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri` and `load_detailed_metadata` as query parameters instead of in the request body. 
-pub async fn describe_table(configuration: &configuration::Configuration, id: &str, describe_table_request: models::DescribeTableRequest, delimiter: Option<&str>, with_table_uri: Option<bool>, load_detailed_metadata: Option<bool>) -> Result<models::DescribeTableResponse, Error<DescribeTableError>> {
+/// Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri`, `load_detailed_metadata`, and `check_declared` as query parameters instead of in the request body. 
+pub async fn describe_table(configuration: &configuration::Configuration, id: &str, describe_table_request: models::DescribeTableRequest, delimiter: Option<&str>, with_table_uri: Option<bool>, load_detailed_metadata: Option<bool>, check_declared: Option<bool>) -> Result<models::DescribeTableResponse, Error<DescribeTableError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_describe_table_request = describe_table_request;
     let p_delimiter = delimiter;
     let p_with_table_uri = with_table_uri;
     let p_load_detailed_metadata = load_detailed_metadata;
+    let p_check_declared = check_declared;
 
     let uri_str = format!("{}/v1/table/{id}/describe", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
@@ -1442,6 +1372,9 @@ pub async fn describe_table(configuration: &configuration::Configuration, id: &s
     }
     if let Some(ref param_value) = p_load_detailed_metadata {
         req_builder = req_builder.query(&[("load_detailed_metadata", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_check_declared {
+        req_builder = req_builder.query(&[("check_declared", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
@@ -2191,13 +2124,14 @@ pub async fn list_table_versions(configuration: &configuration::Configuration, i
     }
 }
 
-/// List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
-pub async fn list_tables(configuration: &configuration::Configuration, id: &str, delimiter: Option<&str>, page_token: Option<&str>, limit: Option<i32>) -> Result<models::ListTablesResponse, Error<ListTablesError>> {
+/// List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
+pub async fn list_tables(configuration: &configuration::Configuration, id: &str, delimiter: Option<&str>, page_token: Option<&str>, limit: Option<i32>, include_declared: Option<bool>) -> Result<models::ListTablesResponse, Error<ListTablesError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_delimiter = delimiter;
     let p_page_token = page_token;
     let p_limit = limit;
+    let p_include_declared = include_declared;
 
     let uri_str = format!("{}/v1/namespace/{id}/table/list", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -2210,6 +2144,9 @@ pub async fn list_tables(configuration: &configuration::Configuration, id: &str,
     }
     if let Some(ref param_value) = p_limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_include_declared {
+        req_builder = req_builder.query(&[("include_declared", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());

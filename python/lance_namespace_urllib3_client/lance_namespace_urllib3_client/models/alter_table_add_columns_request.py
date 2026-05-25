@@ -19,8 +19,8 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from lance_namespace_urllib3_client.models.add_columns_entry import AddColumnsEntry
 from lance_namespace_urllib3_client.models.identity import Identity
-from lance_namespace_urllib3_client.models.new_column_transform import NewColumnTransform
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -29,10 +29,9 @@ class AlterTableAddColumnsRequest(BaseModel):
     AlterTableAddColumnsRequest
     """ # noqa: E501
     identity: Optional[Identity] = None
-    context: Optional[Dict[str, StrictStr]] = Field(default=None, description="Arbitrary context for a request as key-value pairs. How to use the context is custom to the specific implementation.  REST NAMESPACE ONLY Context entries are passed via HTTP headers using the naming convention `x-lance-ctx-<key>: <value>`. For example, a context entry `{\"trace_id\": \"abc123\"}` would be sent as the header `x-lance-ctx-trace_id: abc123`. ")
-    id: Optional[List[StrictStr]] = None
-    new_columns: List[NewColumnTransform] = Field(description="List of new columns to add")
-    __properties: ClassVar[List[str]] = ["identity", "context", "id", "new_columns"]
+    id: Optional[List[StrictStr]] = Field(default=None, description="Table identifier path (namespace + table name)")
+    new_columns: List[AddColumnsEntry] = Field(description="List of new columns to add to the table")
+    __properties: ClassVar[List[str]] = ["identity", "id", "new_columns"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -96,9 +95,8 @@ class AlterTableAddColumnsRequest(BaseModel):
 
         _obj = cls.model_validate({
             "identity": Identity.from_dict(obj["identity"]) if obj.get("identity") is not None else None,
-            "context": obj.get("context"),
             "id": obj.get("id"),
-            "new_columns": [NewColumnTransform.from_dict(_item) for _item in obj["new_columns"]] if obj.get("new_columns") is not None else None
+            "new_columns": [AddColumnsEntry.from_dict(_item) for _item in obj["new_columns"]] if obj.get("new_columns") is not None else None
         })
         return _obj
 

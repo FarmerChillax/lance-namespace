@@ -13,12 +13,15 @@
  */
 package org.lance.namespace.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.openapitools.jackson.nullable.JsonNullable;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -38,16 +41,21 @@ public class AlterColumnsEntry {
   @javax.annotation.Nonnull private String path;
 
   public static final String JSON_PROPERTY_DATA_TYPE = "data_type";
-  @javax.annotation.Nonnull private Object dataType;
+  @javax.annotation.Nullable private Object dataType;
 
   public static final String JSON_PROPERTY_RENAME = "rename";
-  @javax.annotation.Nullable private String rename;
+  @javax.annotation.Nullable private JsonNullable<String> rename = JsonNullable.<String>undefined();
 
   public static final String JSON_PROPERTY_NULLABLE = "nullable";
-  @javax.annotation.Nullable private Boolean nullable;
+
+  @javax.annotation.Nullable
+  private JsonNullable<Boolean> nullable = JsonNullable.<Boolean>undefined();
 
   public static final String JSON_PROPERTY_VIRTUAL_COLUMN = "virtual_column";
-  @javax.annotation.Nullable private AlterVirtualColumnEntry virtualColumn;
+
+  @javax.annotation.Nullable
+  private JsonNullable<AlterVirtualColumnEntry> virtualColumn =
+      JsonNullable.<AlterVirtualColumnEntry>undefined();
 
   public AlterColumnsEntry() {}
 
@@ -75,7 +83,7 @@ public class AlterColumnsEntry {
     this.path = path;
   }
 
-  public AlterColumnsEntry dataType(@javax.annotation.Nonnull Object dataType) {
+  public AlterColumnsEntry dataType(@javax.annotation.Nullable Object dataType) {
 
     this.dataType = dataType;
     return this;
@@ -86,22 +94,22 @@ public class AlterColumnsEntry {
    *
    * @return dataType
    */
-  @javax.annotation.Nonnull
+  @javax.annotation.Nullable
   @JsonProperty(JSON_PROPERTY_DATA_TYPE)
-  @JsonInclude(value = JsonInclude.Include.ALWAYS)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public Object getDataType() {
     return dataType;
   }
 
   @JsonProperty(JSON_PROPERTY_DATA_TYPE)
-  @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public void setDataType(@javax.annotation.Nonnull Object dataType) {
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setDataType(@javax.annotation.Nullable Object dataType) {
     this.dataType = dataType;
   }
 
   public AlterColumnsEntry rename(@javax.annotation.Nullable String rename) {
+    this.rename = JsonNullable.<String>of(rename);
 
-    this.rename = rename;
     return this;
   }
 
@@ -111,21 +119,29 @@ public class AlterColumnsEntry {
    * @return rename
    */
   @javax.annotation.Nullable
+  @JsonIgnore
+  public String getRename() {
+    return rename.orElse(null);
+  }
+
   @JsonProperty(JSON_PROPERTY_RENAME)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public String getRename() {
+  public JsonNullable<String> getRename_JsonNullable() {
     return rename;
   }
 
   @JsonProperty(JSON_PROPERTY_RENAME)
-  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setRename(@javax.annotation.Nullable String rename) {
+  public void setRename_JsonNullable(JsonNullable<String> rename) {
     this.rename = rename;
   }
 
-  public AlterColumnsEntry nullable(@javax.annotation.Nullable Boolean nullable) {
+  public void setRename(@javax.annotation.Nullable String rename) {
+    this.rename = JsonNullable.<String>of(rename);
+  }
 
-    this.nullable = nullable;
+  public AlterColumnsEntry nullable(@javax.annotation.Nullable Boolean nullable) {
+    this.nullable = JsonNullable.<Boolean>of(nullable);
+
     return this;
   }
 
@@ -135,41 +151,57 @@ public class AlterColumnsEntry {
    * @return nullable
    */
   @javax.annotation.Nullable
+  @JsonIgnore
+  public Boolean getNullable() {
+    return nullable.orElse(null);
+  }
+
   @JsonProperty(JSON_PROPERTY_NULLABLE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public Boolean getNullable() {
+  public JsonNullable<Boolean> getNullable_JsonNullable() {
     return nullable;
   }
 
   @JsonProperty(JSON_PROPERTY_NULLABLE)
-  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setNullable(@javax.annotation.Nullable Boolean nullable) {
+  public void setNullable_JsonNullable(JsonNullable<Boolean> nullable) {
     this.nullable = nullable;
+  }
+
+  public void setNullable(@javax.annotation.Nullable Boolean nullable) {
+    this.nullable = JsonNullable.<Boolean>of(nullable);
   }
 
   public AlterColumnsEntry virtualColumn(
       @javax.annotation.Nullable AlterVirtualColumnEntry virtualColumn) {
+    this.virtualColumn = JsonNullable.<AlterVirtualColumnEntry>of(virtualColumn);
 
-    this.virtualColumn = virtualColumn;
     return this;
   }
 
   /**
-   * Virtual column alterations (optional)
+   * Get virtualColumn
    *
    * @return virtualColumn
    */
   @javax.annotation.Nullable
-  @JsonProperty(JSON_PROPERTY_VIRTUAL_COLUMN)
-  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  @JsonIgnore
   public AlterVirtualColumnEntry getVirtualColumn() {
-    return virtualColumn;
+    return virtualColumn.orElse(null);
   }
 
   @JsonProperty(JSON_PROPERTY_VIRTUAL_COLUMN)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setVirtualColumn(@javax.annotation.Nullable AlterVirtualColumnEntry virtualColumn) {
+  public JsonNullable<AlterVirtualColumnEntry> getVirtualColumn_JsonNullable() {
+    return virtualColumn;
+  }
+
+  @JsonProperty(JSON_PROPERTY_VIRTUAL_COLUMN)
+  public void setVirtualColumn_JsonNullable(JsonNullable<AlterVirtualColumnEntry> virtualColumn) {
     this.virtualColumn = virtualColumn;
+  }
+
+  public void setVirtualColumn(@javax.annotation.Nullable AlterVirtualColumnEntry virtualColumn) {
+    this.virtualColumn = JsonNullable.<AlterVirtualColumnEntry>of(virtualColumn);
   }
 
   @Override
@@ -183,14 +215,35 @@ public class AlterColumnsEntry {
     AlterColumnsEntry alterColumnsEntry = (AlterColumnsEntry) o;
     return Objects.equals(this.path, alterColumnsEntry.path)
         && Objects.equals(this.dataType, alterColumnsEntry.dataType)
-        && Objects.equals(this.rename, alterColumnsEntry.rename)
-        && Objects.equals(this.nullable, alterColumnsEntry.nullable)
-        && Objects.equals(this.virtualColumn, alterColumnsEntry.virtualColumn);
+        && equalsNullable(this.rename, alterColumnsEntry.rename)
+        && equalsNullable(this.nullable, alterColumnsEntry.nullable)
+        && equalsNullable(this.virtualColumn, alterColumnsEntry.virtualColumn);
+  }
+
+  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
+    return a == b
+        || (a != null
+            && b != null
+            && a.isPresent()
+            && b.isPresent()
+            && Objects.deepEquals(a.get(), b.get()));
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(path, dataType, rename, nullable, virtualColumn);
+    return Objects.hash(
+        path,
+        dataType,
+        hashCodeNullable(rename),
+        hashCodeNullable(nullable),
+        hashCodeNullable(virtualColumn));
+  }
+
+  private static <T> int hashCodeNullable(JsonNullable<T> a) {
+    if (a == null) {
+      return 1;
+    }
+    return a.isPresent() ? Arrays.deepHashCode(new Object[] {a.get()}) : 31;
   }
 
   @Override

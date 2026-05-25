@@ -31,8 +31,6 @@ from lance_namespace_urllib3_client.models.batch_create_table_versions_request i
 from lance_namespace_urllib3_client.models.batch_create_table_versions_response import BatchCreateTableVersionsResponse
 from lance_namespace_urllib3_client.models.batch_delete_table_versions_request import BatchDeleteTableVersionsRequest
 from lance_namespace_urllib3_client.models.batch_delete_table_versions_response import BatchDeleteTableVersionsResponse
-from lance_namespace_urllib3_client.models.create_empty_table_request import CreateEmptyTableRequest
-from lance_namespace_urllib3_client.models.create_empty_table_response import CreateEmptyTableResponse
 from lance_namespace_urllib3_client.models.create_namespace_request import CreateNamespaceRequest
 from lance_namespace_urllib3_client.models.create_namespace_response import CreateNamespaceResponse
 from lance_namespace_urllib3_client.models.create_table_index_request import CreateTableIndexRequest
@@ -2021,338 +2019,6 @@ class MetadataApi:
         return self.api_client.param_serialize(
             method='POST',
             resource_path='/v1/table/{id}/version/delete',
-            path_params=_path_params,
-            query_params=_query_params,
-            header_params=_header_params,
-            body=_body_params,
-            post_params=_form_params,
-            files=_files,
-            auth_settings=_auth_settings,
-            collection_formats=_collection_formats,
-            _host=_host,
-            _request_auth=_request_auth
-        )
-
-
-
-
-    @validate_call
-    def create_empty_table(
-        self,
-        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
-        create_empty_table_request: CreateEmptyTableRequest,
-        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> CreateEmptyTableResponse:
-        """(Deprecated) Create an empty table
-
-        Create an empty table with the given name without touching storage. This is a metadata-only operation that records the table existence and sets up aspects like access control.  For DirectoryNamespace implementation, this creates a `.lance-reserved` file in the table directory to mark the table's existence without creating actual Lance data files.  **Deprecated**: Use `DeclareTable` instead. 
-
-        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
-        :type id: str
-        :param create_empty_table_request: (required)
-        :type create_empty_table_request: CreateEmptyTableRequest
-        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
-        :type delimiter: str
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-        warnings.warn("POST /v1/table/{id}/create-empty is deprecated.", DeprecationWarning)
-
-        _param = self._create_empty_table_serialize(
-            id=id,
-            create_empty_table_request=create_empty_table_request,
-            delimiter=delimiter,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "CreateEmptyTableResponse",
-            '400': "ErrorResponse",
-            '401': "ErrorResponse",
-            '403': "ErrorResponse",
-            '404': "ErrorResponse",
-            '409': "ErrorResponse",
-            '503': "ErrorResponse",
-            '5XX': "ErrorResponse",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        ).data
-
-
-    @validate_call
-    def create_empty_table_with_http_info(
-        self,
-        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
-        create_empty_table_request: CreateEmptyTableRequest,
-        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[CreateEmptyTableResponse]:
-        """(Deprecated) Create an empty table
-
-        Create an empty table with the given name without touching storage. This is a metadata-only operation that records the table existence and sets up aspects like access control.  For DirectoryNamespace implementation, this creates a `.lance-reserved` file in the table directory to mark the table's existence without creating actual Lance data files.  **Deprecated**: Use `DeclareTable` instead. 
-
-        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
-        :type id: str
-        :param create_empty_table_request: (required)
-        :type create_empty_table_request: CreateEmptyTableRequest
-        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
-        :type delimiter: str
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-        warnings.warn("POST /v1/table/{id}/create-empty is deprecated.", DeprecationWarning)
-
-        _param = self._create_empty_table_serialize(
-            id=id,
-            create_empty_table_request=create_empty_table_request,
-            delimiter=delimiter,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "CreateEmptyTableResponse",
-            '400': "ErrorResponse",
-            '401': "ErrorResponse",
-            '403': "ErrorResponse",
-            '404': "ErrorResponse",
-            '409': "ErrorResponse",
-            '503': "ErrorResponse",
-            '5XX': "ErrorResponse",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        )
-
-
-    @validate_call
-    def create_empty_table_without_preload_content(
-        self,
-        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
-        create_empty_table_request: CreateEmptyTableRequest,
-        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> RESTResponseType:
-        """(Deprecated) Create an empty table
-
-        Create an empty table with the given name without touching storage. This is a metadata-only operation that records the table existence and sets up aspects like access control.  For DirectoryNamespace implementation, this creates a `.lance-reserved` file in the table directory to mark the table's existence without creating actual Lance data files.  **Deprecated**: Use `DeclareTable` instead. 
-
-        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
-        :type id: str
-        :param create_empty_table_request: (required)
-        :type create_empty_table_request: CreateEmptyTableRequest
-        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
-        :type delimiter: str
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-        warnings.warn("POST /v1/table/{id}/create-empty is deprecated.", DeprecationWarning)
-
-        _param = self._create_empty_table_serialize(
-            id=id,
-            create_empty_table_request=create_empty_table_request,
-            delimiter=delimiter,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "CreateEmptyTableResponse",
-            '400': "ErrorResponse",
-            '401': "ErrorResponse",
-            '403': "ErrorResponse",
-            '404': "ErrorResponse",
-            '409': "ErrorResponse",
-            '503': "ErrorResponse",
-            '5XX': "ErrorResponse",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        return response_data.response
-
-
-    def _create_empty_table_serialize(
-        self,
-        id,
-        create_empty_table_request,
-        delimiter,
-        _request_auth,
-        _content_type,
-        _headers,
-        _host_index,
-    ) -> RequestSerialized:
-
-        _host = None
-
-        _collection_formats: Dict[str, str] = {
-        }
-
-        _path_params: Dict[str, str] = {}
-        _query_params: List[Tuple[str, str]] = []
-        _header_params: Dict[str, Optional[str]] = _headers or {}
-        _form_params: List[Tuple[str, str]] = []
-        _files: Dict[
-            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
-        ] = {}
-        _body_params: Optional[bytes] = None
-
-        # process the path parameters
-        if id is not None:
-            _path_params['id'] = id
-        # process the query parameters
-        if delimiter is not None:
-            
-            _query_params.append(('delimiter', delimiter))
-            
-        # process the header parameters
-        # process the form parameters
-        # process the body parameter
-        if create_empty_table_request is not None:
-            _body_params = create_empty_table_request
-
-
-        # set the HTTP header `Accept`
-        if 'Accept' not in _header_params:
-            _header_params['Accept'] = self.api_client.select_header_accept(
-                [
-                    'application/json'
-                ]
-            )
-
-        # set the HTTP header `Content-Type`
-        if _content_type:
-            _header_params['Content-Type'] = _content_type
-        else:
-            _default_content_type = (
-                self.api_client.select_header_content_type(
-                    [
-                        'application/json'
-                    ]
-                )
-            )
-            if _default_content_type is not None:
-                _header_params['Content-Type'] = _default_content_type
-
-        # authentication setting
-        _auth_settings: List[str] = [
-            'OAuth2', 
-            'ApiKeyAuth', 
-            'BearerAuth'
-        ]
-
-        return self.api_client.param_serialize(
-            method='POST',
-            resource_path='/v1/table/{id}/create-empty',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -5325,6 +4991,7 @@ class MetadataApi:
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         with_table_uri: Annotated[Optional[StrictBool], Field(description="Whether to include the table URI in the response")] = None,
         load_detailed_metadata: Annotated[Optional[StrictBool], Field(description="Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`. ")] = None,
+        check_declared: Annotated[Optional[StrictBool], Field(description="Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -5340,7 +5007,7 @@ class MetadataApi:
     ) -> DescribeTableResponse:
         """Describe information of a table
 
-        Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri` and `load_detailed_metadata` as query parameters instead of in the request body. 
+        Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri`, `load_detailed_metadata`, and `check_declared` as query parameters instead of in the request body. 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -5352,6 +5019,8 @@ class MetadataApi:
         :type with_table_uri: bool
         :param load_detailed_metadata: Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`. 
         :type load_detailed_metadata: bool
+        :param check_declared: Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check. 
+        :type check_declared: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -5380,6 +5049,7 @@ class MetadataApi:
             delimiter=delimiter,
             with_table_uri=with_table_uri,
             load_detailed_metadata=load_detailed_metadata,
+            check_declared=check_declared,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -5414,6 +5084,7 @@ class MetadataApi:
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         with_table_uri: Annotated[Optional[StrictBool], Field(description="Whether to include the table URI in the response")] = None,
         load_detailed_metadata: Annotated[Optional[StrictBool], Field(description="Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`. ")] = None,
+        check_declared: Annotated[Optional[StrictBool], Field(description="Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -5429,7 +5100,7 @@ class MetadataApi:
     ) -> ApiResponse[DescribeTableResponse]:
         """Describe information of a table
 
-        Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri` and `load_detailed_metadata` as query parameters instead of in the request body. 
+        Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri`, `load_detailed_metadata`, and `check_declared` as query parameters instead of in the request body. 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -5441,6 +5112,8 @@ class MetadataApi:
         :type with_table_uri: bool
         :param load_detailed_metadata: Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`. 
         :type load_detailed_metadata: bool
+        :param check_declared: Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check. 
+        :type check_declared: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -5469,6 +5142,7 @@ class MetadataApi:
             delimiter=delimiter,
             with_table_uri=with_table_uri,
             load_detailed_metadata=load_detailed_metadata,
+            check_declared=check_declared,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -5503,6 +5177,7 @@ class MetadataApi:
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         with_table_uri: Annotated[Optional[StrictBool], Field(description="Whether to include the table URI in the response")] = None,
         load_detailed_metadata: Annotated[Optional[StrictBool], Field(description="Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`. ")] = None,
+        check_declared: Annotated[Optional[StrictBool], Field(description="Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -5518,7 +5193,7 @@ class MetadataApi:
     ) -> RESTResponseType:
         """Describe information of a table
 
-        Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri` and `load_detailed_metadata` as query parameters instead of in the request body. 
+        Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri`, `load_detailed_metadata`, and `check_declared` as query parameters instead of in the request body. 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -5530,6 +5205,8 @@ class MetadataApi:
         :type with_table_uri: bool
         :param load_detailed_metadata: Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`. 
         :type load_detailed_metadata: bool
+        :param check_declared: Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check. 
+        :type check_declared: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -5558,6 +5235,7 @@ class MetadataApi:
             delimiter=delimiter,
             with_table_uri=with_table_uri,
             load_detailed_metadata=load_detailed_metadata,
+            check_declared=check_declared,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -5587,6 +5265,7 @@ class MetadataApi:
         delimiter,
         with_table_uri,
         load_detailed_metadata,
+        check_declared,
         _request_auth,
         _content_type,
         _headers,
@@ -5622,6 +5301,10 @@ class MetadataApi:
         if load_detailed_metadata is not None:
             
             _query_params.append(('load_detailed_metadata', load_detailed_metadata))
+            
+        if check_declared is not None:
+            
+            _query_params.append(('check_declared', check_declared))
             
         # process the header parameters
         # process the form parameters
@@ -9611,6 +9294,7 @@ class MetadataApi:
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         page_token: Annotated[Optional[StrictStr], Field(description="Pagination token from a previous request")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Maximum number of items to return")] = None,
+        include_declared: Annotated[Optional[StrictBool], Field(description="When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -9626,7 +9310,7 @@ class MetadataApi:
     ) -> ListTablesResponse:
         """List tables in a namespace
 
-        List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
+        List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -9636,6 +9320,8 @@ class MetadataApi:
         :type page_token: str
         :param limit: Maximum number of items to return
         :type limit: int
+        :param include_declared: When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. 
+        :type include_declared: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -9663,6 +9349,7 @@ class MetadataApi:
             delimiter=delimiter,
             page_token=page_token,
             limit=limit,
+            include_declared=include_declared,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -9697,6 +9384,7 @@ class MetadataApi:
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         page_token: Annotated[Optional[StrictStr], Field(description="Pagination token from a previous request")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Maximum number of items to return")] = None,
+        include_declared: Annotated[Optional[StrictBool], Field(description="When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -9712,7 +9400,7 @@ class MetadataApi:
     ) -> ApiResponse[ListTablesResponse]:
         """List tables in a namespace
 
-        List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
+        List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -9722,6 +9410,8 @@ class MetadataApi:
         :type page_token: str
         :param limit: Maximum number of items to return
         :type limit: int
+        :param include_declared: When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. 
+        :type include_declared: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -9749,6 +9439,7 @@ class MetadataApi:
             delimiter=delimiter,
             page_token=page_token,
             limit=limit,
+            include_declared=include_declared,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -9783,6 +9474,7 @@ class MetadataApi:
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         page_token: Annotated[Optional[StrictStr], Field(description="Pagination token from a previous request")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Maximum number of items to return")] = None,
+        include_declared: Annotated[Optional[StrictBool], Field(description="When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -9798,7 +9490,7 @@ class MetadataApi:
     ) -> RESTResponseType:
         """List tables in a namespace
 
-        List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
+        List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -9808,6 +9500,8 @@ class MetadataApi:
         :type page_token: str
         :param limit: Maximum number of items to return
         :type limit: int
+        :param include_declared: When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. 
+        :type include_declared: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -9835,6 +9529,7 @@ class MetadataApi:
             delimiter=delimiter,
             page_token=page_token,
             limit=limit,
+            include_declared=include_declared,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -9864,6 +9559,7 @@ class MetadataApi:
         delimiter,
         page_token,
         limit,
+        include_declared,
         _request_auth,
         _content_type,
         _headers,
@@ -9899,6 +9595,10 @@ class MetadataApi:
         if limit is not None:
             
             _query_params.append(('limit', limit))
+            
+        if include_declared is not None:
+            
+            _query_params.append(('include_declared', include_declared))
             
         # process the header parameters
         # process the form parameters

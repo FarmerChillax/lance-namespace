@@ -30,8 +30,6 @@ import org.lance.namespace.model.BatchCreateTableVersionsRequest;
 import org.lance.namespace.model.BatchCreateTableVersionsResponse;
 import org.lance.namespace.model.BatchDeleteTableVersionsRequest;
 import org.lance.namespace.model.BatchDeleteTableVersionsResponse;
-import org.lance.namespace.model.CreateEmptyTableRequest;
-import org.lance.namespace.model.CreateEmptyTableResponse;
 import org.lance.namespace.model.CreateNamespaceRequest;
 import org.lance.namespace.model.CreateNamespaceResponse;
 import org.lance.namespace.model.CreateTableIndexRequest;
@@ -1050,169 +1048,6 @@ public class MetadataApi {
     try {
       byte[] localVarPostBody =
           memberVarObjectMapper.writeValueAsBytes(batchDeleteTableVersionsRequest);
-      localVarRequestBuilder.method(
-          "POST", HttpRequest.BodyPublishers.ofByteArray(localVarPostBody));
-    } catch (IOException e) {
-      throw new ApiException(e);
-    }
-    if (memberVarReadTimeout != null) {
-      localVarRequestBuilder.timeout(memberVarReadTimeout);
-    }
-    if (memberVarInterceptor != null) {
-      memberVarInterceptor.accept(localVarRequestBuilder);
-    }
-    return localVarRequestBuilder;
-  }
-
-  /**
-   * Create an empty table Create an empty table with the given name without touching storage. This
-   * is a metadata-only operation that records the table existence and sets up aspects like access
-   * control. For DirectoryNamespace implementation, this creates a &#x60;.lance-reserved&#x60; file
-   * in the table directory to mark the table&#39;s existence without creating actual Lance data
-   * files. **Deprecated**: Use &#x60;DeclareTable&#x60; instead.
-   *
-   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
-   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
-   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
-   *     root namespace. (required)
-   * @param createEmptyTableRequest (required)
-   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
-   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
-   *     (optional)
-   * @return CompletableFuture&lt;CreateEmptyTableResponse&gt;
-   * @throws ApiException if fails to make API call
-   * @deprecated
-   */
-  @Deprecated
-  public CompletableFuture<CreateEmptyTableResponse> createEmptyTable(
-      String id, CreateEmptyTableRequest createEmptyTableRequest, String delimiter)
-      throws ApiException {
-    try {
-      HttpRequest.Builder localVarRequestBuilder =
-          createEmptyTableRequestBuilder(id, createEmptyTableRequest, delimiter);
-      return memberVarHttpClient
-          .sendAsync(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofString())
-          .thenComposeAsync(
-              localVarResponse -> {
-                if (localVarResponse.statusCode() / 100 != 2) {
-                  return CompletableFuture.failedFuture(
-                      getApiException("createEmptyTable", localVarResponse));
-                }
-                try {
-                  String responseBody = localVarResponse.body();
-                  return CompletableFuture.completedFuture(
-                      responseBody == null || responseBody.isBlank()
-                          ? null
-                          : memberVarObjectMapper.readValue(
-                              responseBody, new TypeReference<CreateEmptyTableResponse>() {}));
-                } catch (IOException e) {
-                  return CompletableFuture.failedFuture(new ApiException(e));
-                }
-              });
-    } catch (ApiException e) {
-      return CompletableFuture.failedFuture(e);
-    }
-  }
-
-  /**
-   * Create an empty table Create an empty table with the given name without touching storage. This
-   * is a metadata-only operation that records the table existence and sets up aspects like access
-   * control. For DirectoryNamespace implementation, this creates a &#x60;.lance-reserved&#x60; file
-   * in the table directory to mark the table&#39;s existence without creating actual Lance data
-   * files. **Deprecated**: Use &#x60;DeclareTable&#x60; instead.
-   *
-   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
-   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
-   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
-   *     root namespace. (required)
-   * @param createEmptyTableRequest (required)
-   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
-   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
-   *     (optional)
-   * @return CompletableFuture&lt;ApiResponse&lt;CreateEmptyTableResponse&gt;&gt;
-   * @throws ApiException if fails to make API call
-   * @deprecated
-   */
-  @Deprecated
-  public CompletableFuture<ApiResponse<CreateEmptyTableResponse>> createEmptyTableWithHttpInfo(
-      String id, CreateEmptyTableRequest createEmptyTableRequest, String delimiter)
-      throws ApiException {
-    try {
-      HttpRequest.Builder localVarRequestBuilder =
-          createEmptyTableRequestBuilder(id, createEmptyTableRequest, delimiter);
-      return memberVarHttpClient
-          .sendAsync(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofString())
-          .thenComposeAsync(
-              localVarResponse -> {
-                if (memberVarAsyncResponseInterceptor != null) {
-                  memberVarAsyncResponseInterceptor.accept(localVarResponse);
-                }
-                if (localVarResponse.statusCode() / 100 != 2) {
-                  return CompletableFuture.failedFuture(
-                      getApiException("createEmptyTable", localVarResponse));
-                }
-                try {
-                  String responseBody = localVarResponse.body();
-                  return CompletableFuture.completedFuture(
-                      new ApiResponse<CreateEmptyTableResponse>(
-                          localVarResponse.statusCode(),
-                          localVarResponse.headers().map(),
-                          responseBody == null || responseBody.isBlank()
-                              ? null
-                              : memberVarObjectMapper.readValue(
-                                  responseBody, new TypeReference<CreateEmptyTableResponse>() {})));
-                } catch (IOException e) {
-                  return CompletableFuture.failedFuture(new ApiException(e));
-                }
-              });
-    } catch (ApiException e) {
-      return CompletableFuture.failedFuture(e);
-    }
-  }
-
-  private HttpRequest.Builder createEmptyTableRequestBuilder(
-      String id, CreateEmptyTableRequest createEmptyTableRequest, String delimiter)
-      throws ApiException {
-    // verify the required parameter 'id' is set
-    if (id == null) {
-      throw new ApiException(
-          400, "Missing the required parameter 'id' when calling createEmptyTable");
-    }
-    // verify the required parameter 'createEmptyTableRequest' is set
-    if (createEmptyTableRequest == null) {
-      throw new ApiException(
-          400,
-          "Missing the required parameter 'createEmptyTableRequest' when calling createEmptyTable");
-    }
-
-    HttpRequest.Builder localVarRequestBuilder = HttpRequest.newBuilder();
-
-    String localVarPath =
-        "/v1/table/{id}/create-empty".replace("{id}", ApiClient.urlEncode(id.toString()));
-
-    List<Pair> localVarQueryParams = new ArrayList<>();
-    StringJoiner localVarQueryStringJoiner = new StringJoiner("&");
-    String localVarQueryParameterBaseName;
-    localVarQueryParameterBaseName = "delimiter";
-    localVarQueryParams.addAll(ApiClient.parameterToPairs("delimiter", delimiter));
-
-    if (!localVarQueryParams.isEmpty() || localVarQueryStringJoiner.length() != 0) {
-      StringJoiner queryJoiner = new StringJoiner("&");
-      localVarQueryParams.forEach(p -> queryJoiner.add(p.getName() + '=' + p.getValue()));
-      if (localVarQueryStringJoiner.length() != 0) {
-        queryJoiner.add(localVarQueryStringJoiner.toString());
-      }
-      localVarRequestBuilder.uri(
-          URI.create(memberVarBaseUri + localVarPath + '?' + queryJoiner.toString()));
-    } else {
-      localVarRequestBuilder.uri(URI.create(memberVarBaseUri + localVarPath));
-    }
-
-    localVarRequestBuilder.header("Content-Type", "application/json");
-    localVarRequestBuilder.header("Accept", "application/json");
-
-    try {
-      byte[] localVarPostBody = memberVarObjectMapper.writeValueAsBytes(createEmptyTableRequest);
       localVarRequestBuilder.method(
           "POST", HttpRequest.BodyPublishers.ofByteArray(localVarPostBody));
     } catch (IOException e) {
@@ -2622,8 +2457,9 @@ public class MetadataApi {
 
   /**
    * Describe information of a table Describe the detailed information for table &#x60;id&#x60;.
-   * REST NAMESPACE ONLY REST namespace passes &#x60;with_table_uri&#x60; and
-   * &#x60;load_detailed_metadata&#x60; as query parameters instead of in the request body.
+   * REST NAMESPACE ONLY REST namespace passes &#x60;with_table_uri&#x60;,
+   * &#x60;load_detailed_metadata&#x60;, and &#x60;check_declared&#x60; as query parameters instead
+   * of in the request body.
    *
    * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
@@ -2639,6 +2475,10 @@ public class MetadataApi {
    *     dataset. When false (default), only &#x60;location&#x60; is required in the response. When
    *     true, the response includes additional metadata such as &#x60;version&#x60;,
    *     &#x60;schema&#x60;, and &#x60;stats&#x60;. (optional, default to false)
+   * @param checkDeclared Whether to check if the table exists only as a namespace declaration
+   *     without storage data. When false (default), the response should return null for
+   *     &#x60;is_only_declared&#x60; unless another option such as
+   *     &#x60;load_detailed_metadata&#x60; requires the check. (optional, default to false)
    * @return CompletableFuture&lt;DescribeTableResponse&gt;
    * @throws ApiException if fails to make API call
    */
@@ -2647,12 +2487,18 @@ public class MetadataApi {
       DescribeTableRequest describeTableRequest,
       String delimiter,
       Boolean withTableUri,
-      Boolean loadDetailedMetadata)
+      Boolean loadDetailedMetadata,
+      Boolean checkDeclared)
       throws ApiException {
     try {
       HttpRequest.Builder localVarRequestBuilder =
           describeTableRequestBuilder(
-              id, describeTableRequest, delimiter, withTableUri, loadDetailedMetadata);
+              id,
+              describeTableRequest,
+              delimiter,
+              withTableUri,
+              loadDetailedMetadata,
+              checkDeclared);
       return memberVarHttpClient
           .sendAsync(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofString())
           .thenComposeAsync(
@@ -2679,8 +2525,9 @@ public class MetadataApi {
 
   /**
    * Describe information of a table Describe the detailed information for table &#x60;id&#x60;.
-   * REST NAMESPACE ONLY REST namespace passes &#x60;with_table_uri&#x60; and
-   * &#x60;load_detailed_metadata&#x60; as query parameters instead of in the request body.
+   * REST NAMESPACE ONLY REST namespace passes &#x60;with_table_uri&#x60;,
+   * &#x60;load_detailed_metadata&#x60;, and &#x60;check_declared&#x60; as query parameters instead
+   * of in the request body.
    *
    * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
@@ -2696,6 +2543,10 @@ public class MetadataApi {
    *     dataset. When false (default), only &#x60;location&#x60; is required in the response. When
    *     true, the response includes additional metadata such as &#x60;version&#x60;,
    *     &#x60;schema&#x60;, and &#x60;stats&#x60;. (optional, default to false)
+   * @param checkDeclared Whether to check if the table exists only as a namespace declaration
+   *     without storage data. When false (default), the response should return null for
+   *     &#x60;is_only_declared&#x60; unless another option such as
+   *     &#x60;load_detailed_metadata&#x60; requires the check. (optional, default to false)
    * @return CompletableFuture&lt;ApiResponse&lt;DescribeTableResponse&gt;&gt;
    * @throws ApiException if fails to make API call
    */
@@ -2704,12 +2555,18 @@ public class MetadataApi {
       DescribeTableRequest describeTableRequest,
       String delimiter,
       Boolean withTableUri,
-      Boolean loadDetailedMetadata)
+      Boolean loadDetailedMetadata,
+      Boolean checkDeclared)
       throws ApiException {
     try {
       HttpRequest.Builder localVarRequestBuilder =
           describeTableRequestBuilder(
-              id, describeTableRequest, delimiter, withTableUri, loadDetailedMetadata);
+              id,
+              describeTableRequest,
+              delimiter,
+              withTableUri,
+              loadDetailedMetadata,
+              checkDeclared);
       return memberVarHttpClient
           .sendAsync(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofString())
           .thenComposeAsync(
@@ -2745,7 +2602,8 @@ public class MetadataApi {
       DescribeTableRequest describeTableRequest,
       String delimiter,
       Boolean withTableUri,
-      Boolean loadDetailedMetadata)
+      Boolean loadDetailedMetadata,
+      Boolean checkDeclared)
       throws ApiException {
     // verify the required parameter 'id' is set
     if (id == null) {
@@ -2772,6 +2630,8 @@ public class MetadataApi {
     localVarQueryParameterBaseName = "load_detailed_metadata";
     localVarQueryParams.addAll(
         ApiClient.parameterToPairs("load_detailed_metadata", loadDetailedMetadata));
+    localVarQueryParameterBaseName = "check_declared";
+    localVarQueryParams.addAll(ApiClient.parameterToPairs("check_declared", checkDeclared));
 
     if (!localVarQueryParams.isEmpty() || localVarQueryStringJoiner.length() != 0) {
       StringJoiner queryJoiner = new StringJoiner("&");
@@ -4646,7 +4506,7 @@ public class MetadataApi {
    * It passes in the &#x60;ListTablesRequest&#x60; information in the following way: -
    * &#x60;id&#x60;: pass through path parameter of the same name - &#x60;page_token&#x60;: pass
    * through query parameter of the same name - &#x60;limit&#x60;: pass through query parameter of
-   * the same name
+   * the same name - &#x60;include_declared&#x60;: pass through query parameter of the same name
    *
    * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
@@ -4657,14 +4517,18 @@ public class MetadataApi {
    *     (optional)
    * @param pageToken Pagination token from a previous request (optional)
    * @param limit Maximum number of items to return (optional)
+   * @param includeDeclared When true (default), includes tables that have been declared in the
+   *     namespace but not yet created on storage, in addition to tables that have been created.
+   *     When false, only tables with storage components are returned. (optional, default to true)
    * @return CompletableFuture&lt;ListTablesResponse&gt;
    * @throws ApiException if fails to make API call
    */
   public CompletableFuture<ListTablesResponse> listTables(
-      String id, String delimiter, String pageToken, Integer limit) throws ApiException {
+      String id, String delimiter, String pageToken, Integer limit, Boolean includeDeclared)
+      throws ApiException {
     try {
       HttpRequest.Builder localVarRequestBuilder =
-          listTablesRequestBuilder(id, delimiter, pageToken, limit);
+          listTablesRequestBuilder(id, delimiter, pageToken, limit, includeDeclared);
       return memberVarHttpClient
           .sendAsync(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofString())
           .thenComposeAsync(
@@ -4695,7 +4559,7 @@ public class MetadataApi {
    * It passes in the &#x60;ListTablesRequest&#x60; information in the following way: -
    * &#x60;id&#x60;: pass through path parameter of the same name - &#x60;page_token&#x60;: pass
    * through query parameter of the same name - &#x60;limit&#x60;: pass through query parameter of
-   * the same name
+   * the same name - &#x60;include_declared&#x60;: pass through query parameter of the same name
    *
    * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
@@ -4706,14 +4570,18 @@ public class MetadataApi {
    *     (optional)
    * @param pageToken Pagination token from a previous request (optional)
    * @param limit Maximum number of items to return (optional)
+   * @param includeDeclared When true (default), includes tables that have been declared in the
+   *     namespace but not yet created on storage, in addition to tables that have been created.
+   *     When false, only tables with storage components are returned. (optional, default to true)
    * @return CompletableFuture&lt;ApiResponse&lt;ListTablesResponse&gt;&gt;
    * @throws ApiException if fails to make API call
    */
   public CompletableFuture<ApiResponse<ListTablesResponse>> listTablesWithHttpInfo(
-      String id, String delimiter, String pageToken, Integer limit) throws ApiException {
+      String id, String delimiter, String pageToken, Integer limit, Boolean includeDeclared)
+      throws ApiException {
     try {
       HttpRequest.Builder localVarRequestBuilder =
-          listTablesRequestBuilder(id, delimiter, pageToken, limit);
+          listTablesRequestBuilder(id, delimiter, pageToken, limit, includeDeclared);
       return memberVarHttpClient
           .sendAsync(localVarRequestBuilder.build(), HttpResponse.BodyHandlers.ofString())
           .thenComposeAsync(
@@ -4745,7 +4613,8 @@ public class MetadataApi {
   }
 
   private HttpRequest.Builder listTablesRequestBuilder(
-      String id, String delimiter, String pageToken, Integer limit) throws ApiException {
+      String id, String delimiter, String pageToken, Integer limit, Boolean includeDeclared)
+      throws ApiException {
     // verify the required parameter 'id' is set
     if (id == null) {
       throw new ApiException(400, "Missing the required parameter 'id' when calling listTables");
@@ -4765,6 +4634,8 @@ public class MetadataApi {
     localVarQueryParams.addAll(ApiClient.parameterToPairs("page_token", pageToken));
     localVarQueryParameterBaseName = "limit";
     localVarQueryParams.addAll(ApiClient.parameterToPairs("limit", limit));
+    localVarQueryParameterBaseName = "include_declared";
+    localVarQueryParams.addAll(ApiClient.parameterToPairs("include_declared", includeDeclared));
 
     if (!localVarQueryParams.isEmpty() || localVarQueryStringJoiner.length() != 0) {
       StringJoiner queryJoiner = new StringJoiner("&");

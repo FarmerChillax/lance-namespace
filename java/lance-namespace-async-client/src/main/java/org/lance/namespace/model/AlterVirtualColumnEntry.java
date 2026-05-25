@@ -15,12 +15,17 @@ package org.lance.namespace.model;
 
 import org.lance.namespace.client.async.ApiClient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.openapitools.jackson.nullable.JsonNullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -30,40 +35,64 @@ import java.util.StringJoiner;
   AlterVirtualColumnEntry.JSON_PROPERTY_IMAGE,
   AlterVirtualColumnEntry.JSON_PROPERTY_UDF,
   AlterVirtualColumnEntry.JSON_PROPERTY_UDF_NAME,
-  AlterVirtualColumnEntry.JSON_PROPERTY_UDF_VERSION
+  AlterVirtualColumnEntry.JSON_PROPERTY_UDF_VERSION,
+  AlterVirtualColumnEntry.JSON_PROPERTY_UDF_BACKEND,
+  AlterVirtualColumnEntry.JSON_PROPERTY_AUTO_BACKFILL,
+  AlterVirtualColumnEntry.JSON_PROPERTY_MANIFEST,
+  AlterVirtualColumnEntry.JSON_PROPERTY_MANIFEST_CHECKSUM,
+  AlterVirtualColumnEntry.JSON_PROPERTY_FIELD_METADATA
 })
 @javax.annotation.Generated(
     value = "org.openapitools.codegen.languages.JavaClientCodegen",
     comments = "Generator version: 7.12.0")
 public class AlterVirtualColumnEntry {
   public static final String JSON_PROPERTY_INPUT_COLUMNS = "input_columns";
-  @javax.annotation.Nullable private List<String> inputColumns = new ArrayList<>();
+  private JsonNullable<List<String>> inputColumns = JsonNullable.<List<String>>undefined();
 
   public static final String JSON_PROPERTY_IMAGE = "image";
-  @javax.annotation.Nullable private String image;
+  private JsonNullable<String> image = JsonNullable.<String>undefined();
 
   public static final String JSON_PROPERTY_UDF = "udf";
-  @javax.annotation.Nullable private String udf;
+  private JsonNullable<String> udf = JsonNullable.<String>undefined();
 
   public static final String JSON_PROPERTY_UDF_NAME = "udf_name";
-  @javax.annotation.Nullable private String udfName;
+  private JsonNullable<String> udfName = JsonNullable.<String>undefined();
 
   public static final String JSON_PROPERTY_UDF_VERSION = "udf_version";
-  @javax.annotation.Nullable private String udfVersion;
+  private JsonNullable<String> udfVersion = JsonNullable.<String>undefined();
+
+  public static final String JSON_PROPERTY_UDF_BACKEND = "udf_backend";
+  private JsonNullable<String> udfBackend = JsonNullable.<String>undefined();
+
+  public static final String JSON_PROPERTY_AUTO_BACKFILL = "auto_backfill";
+  private JsonNullable<Boolean> autoBackfill = JsonNullable.<Boolean>undefined();
+
+  public static final String JSON_PROPERTY_MANIFEST = "manifest";
+  private JsonNullable<String> manifest = JsonNullable.<String>undefined();
+
+  public static final String JSON_PROPERTY_MANIFEST_CHECKSUM = "manifest_checksum";
+  private JsonNullable<String> manifestChecksum = JsonNullable.<String>undefined();
+
+  public static final String JSON_PROPERTY_FIELD_METADATA = "field_metadata";
+  @javax.annotation.Nullable private Map<String, String> fieldMetadata = new HashMap<>();
 
   public AlterVirtualColumnEntry() {}
 
   public AlterVirtualColumnEntry inputColumns(
       @javax.annotation.Nullable List<String> inputColumns) {
-    this.inputColumns = inputColumns;
+    this.inputColumns = JsonNullable.<List<String>>of(inputColumns);
     return this;
   }
 
   public AlterVirtualColumnEntry addInputColumnsItem(String inputColumnsItem) {
-    if (this.inputColumns == null) {
-      this.inputColumns = new ArrayList<>();
+    if (this.inputColumns == null || !this.inputColumns.isPresent()) {
+      this.inputColumns = JsonNullable.<List<String>>of(new ArrayList<>());
     }
-    this.inputColumns.add(inputColumnsItem);
+    try {
+      this.inputColumns.get().add(inputColumnsItem);
+    } catch (java.util.NoSuchElementException e) {
+      // this can never happen, as we make sure above that the value is present
+    }
     return this;
   }
 
@@ -73,20 +102,28 @@ public class AlterVirtualColumnEntry {
    * @return inputColumns
    */
   @javax.annotation.Nullable
+  @JsonIgnore
+  public List<String> getInputColumns() {
+    return inputColumns.orElse(null);
+  }
+
   @JsonProperty(JSON_PROPERTY_INPUT_COLUMNS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public List<String> getInputColumns() {
+  public JsonNullable<List<String>> getInputColumns_JsonNullable() {
     return inputColumns;
   }
 
   @JsonProperty(JSON_PROPERTY_INPUT_COLUMNS)
-  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setInputColumns(@javax.annotation.Nullable List<String> inputColumns) {
+  public void setInputColumns_JsonNullable(JsonNullable<List<String>> inputColumns) {
     this.inputColumns = inputColumns;
   }
 
+  public void setInputColumns(@javax.annotation.Nullable List<String> inputColumns) {
+    this.inputColumns = JsonNullable.<List<String>>of(inputColumns);
+  }
+
   public AlterVirtualColumnEntry image(@javax.annotation.Nullable String image) {
-    this.image = image;
+    this.image = JsonNullable.<String>of(image);
     return this;
   }
 
@@ -96,20 +133,28 @@ public class AlterVirtualColumnEntry {
    * @return image
    */
   @javax.annotation.Nullable
+  @JsonIgnore
+  public String getImage() {
+    return image.orElse(null);
+  }
+
   @JsonProperty(JSON_PROPERTY_IMAGE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public String getImage() {
+  public JsonNullable<String> getImage_JsonNullable() {
     return image;
   }
 
   @JsonProperty(JSON_PROPERTY_IMAGE)
-  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setImage(@javax.annotation.Nullable String image) {
+  public void setImage_JsonNullable(JsonNullable<String> image) {
     this.image = image;
   }
 
+  public void setImage(@javax.annotation.Nullable String image) {
+    this.image = JsonNullable.<String>of(image);
+  }
+
   public AlterVirtualColumnEntry udf(@javax.annotation.Nullable String udf) {
-    this.udf = udf;
+    this.udf = JsonNullable.<String>of(udf);
     return this;
   }
 
@@ -119,20 +164,28 @@ public class AlterVirtualColumnEntry {
    * @return udf
    */
   @javax.annotation.Nullable
+  @JsonIgnore
+  public String getUdf() {
+    return udf.orElse(null);
+  }
+
   @JsonProperty(JSON_PROPERTY_UDF)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public String getUdf() {
+  public JsonNullable<String> getUdf_JsonNullable() {
     return udf;
   }
 
   @JsonProperty(JSON_PROPERTY_UDF)
-  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setUdf(@javax.annotation.Nullable String udf) {
+  public void setUdf_JsonNullable(JsonNullable<String> udf) {
     this.udf = udf;
   }
 
+  public void setUdf(@javax.annotation.Nullable String udf) {
+    this.udf = JsonNullable.<String>of(udf);
+  }
+
   public AlterVirtualColumnEntry udfName(@javax.annotation.Nullable String udfName) {
-    this.udfName = udfName;
+    this.udfName = JsonNullable.<String>of(udfName);
     return this;
   }
 
@@ -142,20 +195,28 @@ public class AlterVirtualColumnEntry {
    * @return udfName
    */
   @javax.annotation.Nullable
+  @JsonIgnore
+  public String getUdfName() {
+    return udfName.orElse(null);
+  }
+
   @JsonProperty(JSON_PROPERTY_UDF_NAME)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public String getUdfName() {
+  public JsonNullable<String> getUdfName_JsonNullable() {
     return udfName;
   }
 
   @JsonProperty(JSON_PROPERTY_UDF_NAME)
-  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setUdfName(@javax.annotation.Nullable String udfName) {
+  public void setUdfName_JsonNullable(JsonNullable<String> udfName) {
     this.udfName = udfName;
   }
 
+  public void setUdfName(@javax.annotation.Nullable String udfName) {
+    this.udfName = JsonNullable.<String>of(udfName);
+  }
+
   public AlterVirtualColumnEntry udfVersion(@javax.annotation.Nullable String udfVersion) {
-    this.udfVersion = udfVersion;
+    this.udfVersion = JsonNullable.<String>of(udfVersion);
     return this;
   }
 
@@ -165,16 +226,181 @@ public class AlterVirtualColumnEntry {
    * @return udfVersion
    */
   @javax.annotation.Nullable
-  @JsonProperty(JSON_PROPERTY_UDF_VERSION)
-  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  @JsonIgnore
   public String getUdfVersion() {
-    return udfVersion;
+    return udfVersion.orElse(null);
   }
 
   @JsonProperty(JSON_PROPERTY_UDF_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setUdfVersion(@javax.annotation.Nullable String udfVersion) {
+  public JsonNullable<String> getUdfVersion_JsonNullable() {
+    return udfVersion;
+  }
+
+  @JsonProperty(JSON_PROPERTY_UDF_VERSION)
+  public void setUdfVersion_JsonNullable(JsonNullable<String> udfVersion) {
     this.udfVersion = udfVersion;
+  }
+
+  public void setUdfVersion(@javax.annotation.Nullable String udfVersion) {
+    this.udfVersion = JsonNullable.<String>of(udfVersion);
+  }
+
+  public AlterVirtualColumnEntry udfBackend(@javax.annotation.Nullable String udfBackend) {
+    this.udfBackend = JsonNullable.<String>of(udfBackend);
+    return this;
+  }
+
+  /**
+   * UDF backend type (e.g. DockerUDFSpecV1) (optional)
+   *
+   * @return udfBackend
+   */
+  @javax.annotation.Nullable
+  @JsonIgnore
+  public String getUdfBackend() {
+    return udfBackend.orElse(null);
+  }
+
+  @JsonProperty(JSON_PROPERTY_UDF_BACKEND)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public JsonNullable<String> getUdfBackend_JsonNullable() {
+    return udfBackend;
+  }
+
+  @JsonProperty(JSON_PROPERTY_UDF_BACKEND)
+  public void setUdfBackend_JsonNullable(JsonNullable<String> udfBackend) {
+    this.udfBackend = udfBackend;
+  }
+
+  public void setUdfBackend(@javax.annotation.Nullable String udfBackend) {
+    this.udfBackend = JsonNullable.<String>of(udfBackend);
+  }
+
+  public AlterVirtualColumnEntry autoBackfill(@javax.annotation.Nullable Boolean autoBackfill) {
+    this.autoBackfill = JsonNullable.<Boolean>of(autoBackfill);
+    return this;
+  }
+
+  /**
+   * Whether to automatically backfill the column (optional)
+   *
+   * @return autoBackfill
+   */
+  @javax.annotation.Nullable
+  @JsonIgnore
+  public Boolean getAutoBackfill() {
+    return autoBackfill.orElse(null);
+  }
+
+  @JsonProperty(JSON_PROPERTY_AUTO_BACKFILL)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public JsonNullable<Boolean> getAutoBackfill_JsonNullable() {
+    return autoBackfill;
+  }
+
+  @JsonProperty(JSON_PROPERTY_AUTO_BACKFILL)
+  public void setAutoBackfill_JsonNullable(JsonNullable<Boolean> autoBackfill) {
+    this.autoBackfill = autoBackfill;
+  }
+
+  public void setAutoBackfill(@javax.annotation.Nullable Boolean autoBackfill) {
+    this.autoBackfill = JsonNullable.<Boolean>of(autoBackfill);
+  }
+
+  public AlterVirtualColumnEntry manifest(@javax.annotation.Nullable String manifest) {
+    this.manifest = JsonNullable.<String>of(manifest);
+    return this;
+  }
+
+  /**
+   * JSON-serialized manifest for the UDF environment (optional)
+   *
+   * @return manifest
+   */
+  @javax.annotation.Nullable
+  @JsonIgnore
+  public String getManifest() {
+    return manifest.orElse(null);
+  }
+
+  @JsonProperty(JSON_PROPERTY_MANIFEST)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public JsonNullable<String> getManifest_JsonNullable() {
+    return manifest;
+  }
+
+  @JsonProperty(JSON_PROPERTY_MANIFEST)
+  public void setManifest_JsonNullable(JsonNullable<String> manifest) {
+    this.manifest = manifest;
+  }
+
+  public void setManifest(@javax.annotation.Nullable String manifest) {
+    this.manifest = JsonNullable.<String>of(manifest);
+  }
+
+  public AlterVirtualColumnEntry manifestChecksum(
+      @javax.annotation.Nullable String manifestChecksum) {
+    this.manifestChecksum = JsonNullable.<String>of(manifestChecksum);
+    return this;
+  }
+
+  /**
+   * SHA-256 checksum of the manifest content (optional)
+   *
+   * @return manifestChecksum
+   */
+  @javax.annotation.Nullable
+  @JsonIgnore
+  public String getManifestChecksum() {
+    return manifestChecksum.orElse(null);
+  }
+
+  @JsonProperty(JSON_PROPERTY_MANIFEST_CHECKSUM)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public JsonNullable<String> getManifestChecksum_JsonNullable() {
+    return manifestChecksum;
+  }
+
+  @JsonProperty(JSON_PROPERTY_MANIFEST_CHECKSUM)
+  public void setManifestChecksum_JsonNullable(JsonNullable<String> manifestChecksum) {
+    this.manifestChecksum = manifestChecksum;
+  }
+
+  public void setManifestChecksum(@javax.annotation.Nullable String manifestChecksum) {
+    this.manifestChecksum = JsonNullable.<String>of(manifestChecksum);
+  }
+
+  public AlterVirtualColumnEntry fieldMetadata(
+      @javax.annotation.Nullable Map<String, String> fieldMetadata) {
+    this.fieldMetadata = fieldMetadata;
+    return this;
+  }
+
+  public AlterVirtualColumnEntry putFieldMetadataItem(String key, String fieldMetadataItem) {
+    if (this.fieldMetadata == null) {
+      this.fieldMetadata = new HashMap<>();
+    }
+    this.fieldMetadata.put(key, fieldMetadataItem);
+    return this;
+  }
+
+  /**
+   * User-supplied field metadata (optional)
+   *
+   * @return fieldMetadata
+   */
+  @javax.annotation.Nullable
+  @JsonProperty(JSON_PROPERTY_FIELD_METADATA)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public Map<String, String> getFieldMetadata() {
+    return fieldMetadata;
+  }
+
+  @JsonProperty(JSON_PROPERTY_FIELD_METADATA)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setFieldMetadata(@javax.annotation.Nullable Map<String, String> fieldMetadata) {
+    this.fieldMetadata = fieldMetadata;
   }
 
   /** Return true if this AlterVirtualColumnEntry object is equal to o. */
@@ -187,16 +413,47 @@ public class AlterVirtualColumnEntry {
       return false;
     }
     AlterVirtualColumnEntry alterVirtualColumnEntry = (AlterVirtualColumnEntry) o;
-    return Objects.equals(this.inputColumns, alterVirtualColumnEntry.inputColumns)
-        && Objects.equals(this.image, alterVirtualColumnEntry.image)
-        && Objects.equals(this.udf, alterVirtualColumnEntry.udf)
-        && Objects.equals(this.udfName, alterVirtualColumnEntry.udfName)
-        && Objects.equals(this.udfVersion, alterVirtualColumnEntry.udfVersion);
+    return equalsNullable(this.inputColumns, alterVirtualColumnEntry.inputColumns)
+        && equalsNullable(this.image, alterVirtualColumnEntry.image)
+        && equalsNullable(this.udf, alterVirtualColumnEntry.udf)
+        && equalsNullable(this.udfName, alterVirtualColumnEntry.udfName)
+        && equalsNullable(this.udfVersion, alterVirtualColumnEntry.udfVersion)
+        && equalsNullable(this.udfBackend, alterVirtualColumnEntry.udfBackend)
+        && equalsNullable(this.autoBackfill, alterVirtualColumnEntry.autoBackfill)
+        && equalsNullable(this.manifest, alterVirtualColumnEntry.manifest)
+        && equalsNullable(this.manifestChecksum, alterVirtualColumnEntry.manifestChecksum)
+        && Objects.equals(this.fieldMetadata, alterVirtualColumnEntry.fieldMetadata);
+  }
+
+  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
+    return a == b
+        || (a != null
+            && b != null
+            && a.isPresent()
+            && b.isPresent()
+            && Objects.deepEquals(a.get(), b.get()));
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(inputColumns, image, udf, udfName, udfVersion);
+    return Objects.hash(
+        hashCodeNullable(inputColumns),
+        hashCodeNullable(image),
+        hashCodeNullable(udf),
+        hashCodeNullable(udfName),
+        hashCodeNullable(udfVersion),
+        hashCodeNullable(udfBackend),
+        hashCodeNullable(autoBackfill),
+        hashCodeNullable(manifest),
+        hashCodeNullable(manifestChecksum),
+        fieldMetadata);
+  }
+
+  private static <T> int hashCodeNullable(JsonNullable<T> a) {
+    if (a == null) {
+      return 1;
+    }
+    return a.isPresent() ? Arrays.deepHashCode(new Object[] {a.get()}) : 31;
   }
 
   @Override
@@ -208,6 +465,11 @@ public class AlterVirtualColumnEntry {
     sb.append("    udf: ").append(toIndentedString(udf)).append("\n");
     sb.append("    udfName: ").append(toIndentedString(udfName)).append("\n");
     sb.append("    udfVersion: ").append(toIndentedString(udfVersion)).append("\n");
+    sb.append("    udfBackend: ").append(toIndentedString(udfBackend)).append("\n");
+    sb.append("    autoBackfill: ").append(toIndentedString(autoBackfill)).append("\n");
+    sb.append("    manifest: ").append(toIndentedString(manifest)).append("\n");
+    sb.append("    manifestChecksum: ").append(toIndentedString(manifestChecksum)).append("\n");
+    sb.append("    fieldMetadata: ").append(toIndentedString(fieldMetadata)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -299,6 +561,54 @@ public class AlterVirtualColumnEntry {
           String.format(
               "%sudf_version%s=%s",
               prefix, suffix, ApiClient.urlEncode(ApiClient.valueToString(getUdfVersion()))));
+    }
+
+    // add `udf_backend` to the URL query string
+    if (getUdfBackend() != null) {
+      joiner.add(
+          String.format(
+              "%sudf_backend%s=%s",
+              prefix, suffix, ApiClient.urlEncode(ApiClient.valueToString(getUdfBackend()))));
+    }
+
+    // add `auto_backfill` to the URL query string
+    if (getAutoBackfill() != null) {
+      joiner.add(
+          String.format(
+              "%sauto_backfill%s=%s",
+              prefix, suffix, ApiClient.urlEncode(ApiClient.valueToString(getAutoBackfill()))));
+    }
+
+    // add `manifest` to the URL query string
+    if (getManifest() != null) {
+      joiner.add(
+          String.format(
+              "%smanifest%s=%s",
+              prefix, suffix, ApiClient.urlEncode(ApiClient.valueToString(getManifest()))));
+    }
+
+    // add `manifest_checksum` to the URL query string
+    if (getManifestChecksum() != null) {
+      joiner.add(
+          String.format(
+              "%smanifest_checksum%s=%s",
+              prefix, suffix, ApiClient.urlEncode(ApiClient.valueToString(getManifestChecksum()))));
+    }
+
+    // add `field_metadata` to the URL query string
+    if (getFieldMetadata() != null) {
+      for (String _key : getFieldMetadata().keySet()) {
+        joiner.add(
+            String.format(
+                "%sfield_metadata%s%s=%s",
+                prefix,
+                suffix,
+                "".equals(suffix)
+                    ? ""
+                    : String.format("%s%d%s", containerPrefix, _key, containerSuffix),
+                getFieldMetadata().get(_key),
+                ApiClient.urlEncode(ApiClient.valueToString(getFieldMetadata().get(_key)))));
+      }
     }
 
     return joiner.toString();
