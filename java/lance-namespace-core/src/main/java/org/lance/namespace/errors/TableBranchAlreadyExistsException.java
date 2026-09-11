@@ -15,6 +15,8 @@ package org.lance.namespace.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when a table branch with the specified name already exists. */
 public class TableBranchAlreadyExistsException extends LanceNamespaceException {
   public TableBranchAlreadyExistsException(String message) {
@@ -28,5 +30,13 @@ public class TableBranchAlreadyExistsException extends LanceNamespaceException {
   public TableBranchAlreadyExistsException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.TABLE_BRANCH_ALREADY_EXISTS, message, detail, instance);
+  }
+
+  public TableBranchAlreadyExistsException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.TABLE_BRANCH_ALREADY_EXISTS, message, detail, instance, context);
   }
 }

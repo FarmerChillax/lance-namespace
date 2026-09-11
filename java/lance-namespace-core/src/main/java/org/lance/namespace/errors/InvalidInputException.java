@@ -15,6 +15,8 @@ package org.lance.namespace.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when the request contains invalid parameters. */
 public class InvalidInputException extends LanceNamespaceException {
   public InvalidInputException(String message) {
@@ -27,5 +29,13 @@ public class InvalidInputException extends LanceNamespaceException {
 
   public InvalidInputException(String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.INVALID_INPUT, message, detail, instance);
+  }
+
+  public InvalidInputException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.INVALID_INPUT, message, detail, instance, context);
   }
 }

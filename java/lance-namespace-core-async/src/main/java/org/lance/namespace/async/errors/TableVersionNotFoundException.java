@@ -15,6 +15,8 @@ package org.lance.namespace.async.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when the specified table version does not exist. */
 public class TableVersionNotFoundException extends LanceNamespaceException {
   public TableVersionNotFoundException(String message) {
@@ -28,5 +30,13 @@ public class TableVersionNotFoundException extends LanceNamespaceException {
   public TableVersionNotFoundException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.TABLE_VERSION_NOT_FOUND, message, detail, instance);
+  }
+
+  public TableVersionNotFoundException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.TABLE_VERSION_NOT_FOUND, message, detail, instance, context);
   }
 }

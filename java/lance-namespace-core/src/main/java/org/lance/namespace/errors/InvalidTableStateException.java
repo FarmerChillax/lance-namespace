@@ -15,6 +15,8 @@ package org.lance.namespace.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when the table is in an invalid state for the operation. */
 public class InvalidTableStateException extends LanceNamespaceException {
   public InvalidTableStateException(String message) {
@@ -28,5 +30,13 @@ public class InvalidTableStateException extends LanceNamespaceException {
   public InvalidTableStateException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.INVALID_TABLE_STATE, message, detail, instance);
+  }
+
+  public InvalidTableStateException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.INVALID_TABLE_STATE, message, detail, instance, context);
   }
 }

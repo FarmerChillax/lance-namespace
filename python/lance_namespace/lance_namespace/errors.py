@@ -37,7 +37,7 @@ Access the error code:
 """
 
 from enum import IntEnum
-from typing import Type, Dict
+from typing import Optional, Type, Dict
 
 
 class ErrorCode(IntEnum):
@@ -79,12 +79,21 @@ class LanceNamespaceError(Exception):
     ----------
     code : ErrorCode
         The error code identifying the error type.
+    context : Optional[Dict[str, str]]
+        Optional context entries associated with the error.
+
+        For REST namespaces, context entries whose key starts with
+        ``header.`` correspond to HTTP response headers returned with
+        the error. For example, a throttling (429) response carrying a
+        ``Retry-After: 2`` header yields the entry
+        ``{"header.retry-after": "2"}``.
     """
 
     code: ErrorCode = ErrorCode.INTERNAL
 
-    def __init__(self, message: str):
+    def __init__(self, message: str, context: Optional[Dict[str, str]] = None):
         super().__init__(message)
+        self.context: Optional[Dict[str, str]] = context
 
 
 class UnsupportedOperationError(LanceNamespaceError):
@@ -260,7 +269,9 @@ _ERROR_CODE_TO_EXCEPTION: Dict[ErrorCode, Type[LanceNamespaceError]] = {
 }
 
 
-def from_error_code(code: int, message: str) -> LanceNamespaceError:
+def from_error_code(
+    code: int, message: str, context: Optional[Dict[str, str]] = None
+) -> LanceNamespaceError:
     """Create an exception from an error code.
 
     Parameters
@@ -269,6 +280,10 @@ def from_error_code(code: int, message: str) -> LanceNamespaceError:
         The numeric error code.
     message : str
         The error message.
+    context : Optional[Dict[str, str]]
+        Optional context entries associated with the error. For REST
+        namespaces, keys starting with ``header.`` correspond to HTTP
+        response headers (e.g. ``{"header.retry-after": "2"}``).
 
     Returns
     -------
@@ -288,4 +303,4 @@ def from_error_code(code: int, message: str) -> LanceNamespaceError:
         exc_class = _ERROR_CODE_TO_EXCEPTION.get(error_code, InternalError)
     except ValueError:
         exc_class = InternalError
-    return exc_class(message)
+    return exc_class(message, context)

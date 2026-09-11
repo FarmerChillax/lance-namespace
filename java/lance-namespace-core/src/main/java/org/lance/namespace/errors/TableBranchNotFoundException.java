@@ -15,6 +15,8 @@ package org.lance.namespace.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when the specified table branch does not exist. */
 public class TableBranchNotFoundException extends LanceNamespaceException {
   public TableBranchNotFoundException(String message) {
@@ -28,5 +30,13 @@ public class TableBranchNotFoundException extends LanceNamespaceException {
   public TableBranchNotFoundException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.TABLE_BRANCH_NOT_FOUND, message, detail, instance);
+  }
+
+  public TableBranchNotFoundException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.TABLE_BRANCH_NOT_FOUND, message, detail, instance, context);
   }
 }

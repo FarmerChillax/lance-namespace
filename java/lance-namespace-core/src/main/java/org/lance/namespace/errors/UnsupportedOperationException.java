@@ -15,6 +15,8 @@ package org.lance.namespace.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when an operation is not supported by the backend. */
 public class UnsupportedOperationException extends LanceNamespaceException {
   public UnsupportedOperationException(String message) {
@@ -28,5 +30,13 @@ public class UnsupportedOperationException extends LanceNamespaceException {
   public UnsupportedOperationException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.UNSUPPORTED, message, detail, instance);
+  }
+
+  public UnsupportedOperationException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.UNSUPPORTED, message, detail, instance, context);
   }
 }

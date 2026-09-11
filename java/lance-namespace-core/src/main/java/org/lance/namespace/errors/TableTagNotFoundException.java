@@ -15,6 +15,8 @@ package org.lance.namespace.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when the specified table tag does not exist. */
 public class TableTagNotFoundException extends LanceNamespaceException {
   public TableTagNotFoundException(String message) {
@@ -28,5 +30,13 @@ public class TableTagNotFoundException extends LanceNamespaceException {
   public TableTagNotFoundException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.TABLE_TAG_NOT_FOUND, message, detail, instance);
+  }
+
+  public TableTagNotFoundException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.TABLE_TAG_NOT_FOUND, message, detail, instance, context);
   }
 }

@@ -15,6 +15,8 @@ package org.lance.namespace.async.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when table schema validation fails. */
 public class TableSchemaValidationException extends LanceNamespaceException {
   public TableSchemaValidationException(String message) {
@@ -28,5 +30,13 @@ public class TableSchemaValidationException extends LanceNamespaceException {
   public TableSchemaValidationException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.TABLE_SCHEMA_VALIDATION_ERROR, message, detail, instance);
+  }
+
+  public TableSchemaValidationException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.TABLE_SCHEMA_VALIDATION_ERROR, message, detail, instance, context);
   }
 }

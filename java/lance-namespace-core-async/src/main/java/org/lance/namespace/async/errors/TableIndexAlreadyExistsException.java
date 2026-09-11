@@ -15,6 +15,8 @@ package org.lance.namespace.async.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when a table index with the specified name already exists. */
 public class TableIndexAlreadyExistsException extends LanceNamespaceException {
   public TableIndexAlreadyExistsException(String message) {
@@ -28,5 +30,13 @@ public class TableIndexAlreadyExistsException extends LanceNamespaceException {
   public TableIndexAlreadyExistsException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.TABLE_INDEX_ALREADY_EXISTS, message, detail, instance);
+  }
+
+  public TableIndexAlreadyExistsException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.TABLE_INDEX_ALREADY_EXISTS, message, detail, instance, context);
   }
 }

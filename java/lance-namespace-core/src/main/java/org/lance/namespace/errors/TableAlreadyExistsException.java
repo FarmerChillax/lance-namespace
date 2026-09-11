@@ -15,6 +15,8 @@ package org.lance.namespace.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when a table with the specified name already exists. */
 public class TableAlreadyExistsException extends LanceNamespaceException {
   public TableAlreadyExistsException(String message) {
@@ -28,5 +30,13 @@ public class TableAlreadyExistsException extends LanceNamespaceException {
   public TableAlreadyExistsException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.TABLE_ALREADY_EXISTS, message, detail, instance);
+  }
+
+  public TableAlreadyExistsException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.TABLE_ALREADY_EXISTS, message, detail, instance, context);
   }
 }

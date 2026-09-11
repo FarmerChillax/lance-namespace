@@ -15,6 +15,8 @@ package org.lance.namespace.async.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when the service is temporarily unavailable. */
 public class ServiceUnavailableException extends LanceNamespaceException {
   public ServiceUnavailableException(String message) {
@@ -28,5 +30,13 @@ public class ServiceUnavailableException extends LanceNamespaceException {
   public ServiceUnavailableException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.SERVICE_UNAVAILABLE, message, detail, instance);
+  }
+
+  public ServiceUnavailableException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.SERVICE_UNAVAILABLE, message, detail, instance, context);
   }
 }

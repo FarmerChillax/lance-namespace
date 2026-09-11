@@ -39,6 +39,25 @@ public class LanceNamespaceTest {
   }
 
   @Test
+  void testErrorFactoryWithContext() {
+    Map<String, String> context = new HashMap<>();
+    context.put("header.retry-after", "2");
+    org.lance.namespace.errors.LanceNamespaceException err =
+        org.lance.namespace.errors.ErrorFactory.fromErrorCode(21, "throttled", null, null, context);
+    assertInstanceOf(org.lance.namespace.errors.ThrottlingException.class, err);
+    assertEquals(21, err.getCode());
+    assertEquals(context, err.getContext());
+  }
+
+  @Test
+  void testErrorFactoryWithoutContextIsNull() {
+    org.lance.namespace.errors.LanceNamespaceException err =
+        org.lance.namespace.errors.ErrorFactory.fromErrorCode(21, "throttled");
+    assertInstanceOf(org.lance.namespace.errors.ThrottlingException.class, err);
+    assertNull(err.getContext());
+  }
+
+  @Test
   void testNativeImplsDefined() {
     // Test that native implementations are defined
     assertTrue(LanceNamespace.NATIVE_IMPLS.containsKey("dir"));

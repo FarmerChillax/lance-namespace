@@ -15,6 +15,8 @@ package org.lance.namespace.async.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when a namespace with the specified name already exists. */
 public class NamespaceAlreadyExistsException extends LanceNamespaceException {
   public NamespaceAlreadyExistsException(String message) {
@@ -28,5 +30,13 @@ public class NamespaceAlreadyExistsException extends LanceNamespaceException {
   public NamespaceAlreadyExistsException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.NAMESPACE_ALREADY_EXISTS, message, detail, instance);
+  }
+
+  public NamespaceAlreadyExistsException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.NAMESPACE_ALREADY_EXISTS, message, detail, instance, context);
   }
 }

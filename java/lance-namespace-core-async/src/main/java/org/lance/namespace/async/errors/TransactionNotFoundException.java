@@ -15,6 +15,8 @@ package org.lance.namespace.async.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when the specified transaction does not exist. */
 public class TransactionNotFoundException extends LanceNamespaceException {
   public TransactionNotFoundException(String message) {
@@ -28,5 +30,13 @@ public class TransactionNotFoundException extends LanceNamespaceException {
   public TransactionNotFoundException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.TRANSACTION_NOT_FOUND, message, detail, instance);
+  }
+
+  public TransactionNotFoundException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.TRANSACTION_NOT_FOUND, message, detail, instance, context);
   }
 }

@@ -15,6 +15,8 @@ package org.lance.namespace.async.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when a table tag with the specified name already exists. */
 public class TableTagAlreadyExistsException extends LanceNamespaceException {
   public TableTagAlreadyExistsException(String message) {
@@ -28,5 +30,13 @@ public class TableTagAlreadyExistsException extends LanceNamespaceException {
   public TableTagAlreadyExistsException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.TABLE_TAG_ALREADY_EXISTS, message, detail, instance);
+  }
+
+  public TableTagAlreadyExistsException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.TABLE_TAG_ALREADY_EXISTS, message, detail, instance, context);
   }
 }

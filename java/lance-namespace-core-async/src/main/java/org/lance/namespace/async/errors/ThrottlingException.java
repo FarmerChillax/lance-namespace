@@ -15,6 +15,8 @@ package org.lance.namespace.async.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when the request rate limit is exceeded. */
 public class ThrottlingException extends LanceNamespaceException {
   public ThrottlingException(String message) {
@@ -27,5 +29,13 @@ public class ThrottlingException extends LanceNamespaceException {
 
   public ThrottlingException(String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.THROTTLING, message, detail, instance);
+  }
+
+  public ThrottlingException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.THROTTLING, message, detail, instance, context);
   }
 }

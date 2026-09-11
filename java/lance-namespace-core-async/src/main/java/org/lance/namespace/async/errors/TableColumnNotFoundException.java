@@ -15,6 +15,8 @@ package org.lance.namespace.async.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when the specified table column does not exist. */
 public class TableColumnNotFoundException extends LanceNamespaceException {
   public TableColumnNotFoundException(String message) {
@@ -28,5 +30,13 @@ public class TableColumnNotFoundException extends LanceNamespaceException {
   public TableColumnNotFoundException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.TABLE_COLUMN_NOT_FOUND, message, detail, instance);
+  }
+
+  public TableColumnNotFoundException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.TABLE_COLUMN_NOT_FOUND, message, detail, instance, context);
   }
 }

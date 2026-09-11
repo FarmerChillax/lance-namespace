@@ -15,6 +15,8 @@ package org.lance.namespace.async.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown for unexpected internal errors. */
 public class InternalException extends LanceNamespaceException {
   public InternalException(String message) {
@@ -27,5 +29,13 @@ public class InternalException extends LanceNamespaceException {
 
   public InternalException(String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.INTERNAL, message, detail, instance);
+  }
+
+  public InternalException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.INTERNAL, message, detail, instance, context);
   }
 }

@@ -15,6 +15,8 @@ package org.lance.namespace.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when the user lacks permission for the operation. */
 public class PermissionDeniedException extends LanceNamespaceException {
   public PermissionDeniedException(String message) {
@@ -28,5 +30,13 @@ public class PermissionDeniedException extends LanceNamespaceException {
   public PermissionDeniedException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.PERMISSION_DENIED, message, detail, instance);
+  }
+
+  public PermissionDeniedException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.PERMISSION_DENIED, message, detail, instance, context);
   }
 }

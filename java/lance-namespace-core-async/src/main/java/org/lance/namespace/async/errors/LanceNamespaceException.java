@@ -15,6 +15,8 @@ package org.lance.namespace.async.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /**
  * Base exception for all Lance Namespace errors.
  *
@@ -25,6 +27,7 @@ public class LanceNamespaceException extends RuntimeException {
   private final ErrorCode errorCode;
   @Nullable private final String detail;
   @Nullable private final String instance;
+  @Nullable private final Map<String, String> context;
 
   /**
    * Constructs a new LanceNamespaceException with the specified error code and message.
@@ -33,7 +36,7 @@ public class LanceNamespaceException extends RuntimeException {
    * @param message the error message
    */
   public LanceNamespaceException(ErrorCode errorCode, String message) {
-    this(errorCode, message, null, null, null);
+    this(errorCode, message, null, null, null, null);
   }
 
   /**
@@ -44,7 +47,7 @@ public class LanceNamespaceException extends RuntimeException {
    * @param cause the cause of this exception
    */
   public LanceNamespaceException(ErrorCode errorCode, String message, Throwable cause) {
-    this(errorCode, message, null, null, cause);
+    this(errorCode, message, null, null, null, cause);
   }
 
   /**
@@ -57,16 +60,35 @@ public class LanceNamespaceException extends RuntimeException {
    */
   public LanceNamespaceException(
       ErrorCode errorCode, String message, @Nullable String detail, @Nullable String instance) {
-    this(errorCode, message, detail, instance, null);
+    this(errorCode, message, detail, instance, null, null);
   }
 
   /**
-   * Constructs a new LanceNamespaceException with full details and a cause.
+   * Constructs a new LanceNamespaceException with full details and context.
    *
    * @param errorCode the error code identifying the error type
    * @param message the error message
    * @param detail optional detailed explanation
    * @param instance optional identifier for this specific error occurrence
+   * @param context optional context entries associated with the error
+   */
+  public LanceNamespaceException(
+      ErrorCode errorCode,
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    this(errorCode, message, detail, instance, context, null);
+  }
+
+  /**
+   * Constructs a new LanceNamespaceException with full details, context, and a cause.
+   *
+   * @param errorCode the error code identifying the error type
+   * @param message the error message
+   * @param detail optional detailed explanation
+   * @param instance optional identifier for this specific error occurrence
+   * @param context optional context entries associated with the error
    * @param cause the cause of this exception
    */
   public LanceNamespaceException(
@@ -74,11 +96,13 @@ public class LanceNamespaceException extends RuntimeException {
       String message,
       @Nullable String detail,
       @Nullable String instance,
+      @Nullable Map<String, String> context,
       @Nullable Throwable cause) {
     super(message, cause);
     this.errorCode = errorCode;
     this.detail = detail;
     this.instance = instance;
+    this.context = context;
   }
 
   /**
@@ -119,6 +143,20 @@ public class LanceNamespaceException extends RuntimeException {
     return instance;
   }
 
+  /**
+   * Returns the optional context entries associated with this error.
+   *
+   * <p>For REST namespaces, context entries whose key starts with {@code header.} correspond to
+   * HTTP response headers returned with the error. For example, a throttling (429) response
+   * carrying a {@code Retry-After: 2} header yields the entry {@code header.retry-after=2}.
+   *
+   * @return the context map, or null if not set
+   */
+  @Nullable
+  public Map<String, String> getContext() {
+    return context;
+  }
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
@@ -133,6 +171,9 @@ public class LanceNamespaceException extends RuntimeException {
     }
     if (instance != null) {
       sb.append(", instance='").append(instance).append("'");
+    }
+    if (context != null) {
+      sb.append(", context=").append(context);
     }
     sb.append("}");
     return sb.toString();

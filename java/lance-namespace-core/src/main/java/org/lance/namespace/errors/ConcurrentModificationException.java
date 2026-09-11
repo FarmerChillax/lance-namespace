@@ -15,6 +15,8 @@ package org.lance.namespace.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when an optimistic concurrency conflict occurs. */
 public class ConcurrentModificationException extends LanceNamespaceException {
   public ConcurrentModificationException(String message) {
@@ -28,5 +30,13 @@ public class ConcurrentModificationException extends LanceNamespaceException {
   public ConcurrentModificationException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.CONCURRENT_MODIFICATION, message, detail, instance);
+  }
+
+  public ConcurrentModificationException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.CONCURRENT_MODIFICATION, message, detail, instance, context);
   }
 }

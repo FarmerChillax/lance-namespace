@@ -195,3 +195,23 @@ class TestErrorCodes:
         err = from_error_code(23, "branch exists")
         assert isinstance(err, TableBranchAlreadyExistsError)
         assert err.code == ErrorCode.TABLE_BRANCH_ALREADY_EXISTS
+
+    def test_error_context_round_trip(self):
+        from lance_namespace import (
+            ErrorCode,
+            ThrottlingError,
+            from_error_code,
+        )
+
+        err = from_error_code(
+            21, "throttled", context={"header.retry-after": "2"}
+        )
+        assert isinstance(err, ThrottlingError)
+        assert err.code == ErrorCode.THROTTLING
+        assert err.context == {"header.retry-after": "2"}
+
+    def test_error_context_default_none(self):
+        from lance_namespace import from_error_code
+
+        err = from_error_code(21, "throttled")
+        assert err.context is None

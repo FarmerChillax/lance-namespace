@@ -15,6 +15,8 @@ package org.lance.namespace.async.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when authentication credentials are missing or invalid. */
 public class UnauthenticatedException extends LanceNamespaceException {
   public UnauthenticatedException(String message) {
@@ -28,5 +30,13 @@ public class UnauthenticatedException extends LanceNamespaceException {
   public UnauthenticatedException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.UNAUTHENTICATED, message, detail, instance);
+  }
+
+  public UnauthenticatedException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.UNAUTHENTICATED, message, detail, instance, context);
   }
 }

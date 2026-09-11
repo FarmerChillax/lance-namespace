@@ -15,6 +15,8 @@ package org.lance.namespace.errors;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 /** Thrown when trying to drop a namespace that contains tables or child namespaces. */
 public class NamespaceNotEmptyException extends LanceNamespaceException {
   public NamespaceNotEmptyException(String message) {
@@ -28,5 +30,13 @@ public class NamespaceNotEmptyException extends LanceNamespaceException {
   public NamespaceNotEmptyException(
       String message, @Nullable String detail, @Nullable String instance) {
     super(ErrorCode.NAMESPACE_NOT_EMPTY, message, detail, instance);
+  }
+
+  public NamespaceNotEmptyException(
+      String message,
+      @Nullable String detail,
+      @Nullable String instance,
+      @Nullable Map<String, String> context) {
+    super(ErrorCode.NAMESPACE_NOT_EMPTY, message, detail, instance, context);
   }
 }
