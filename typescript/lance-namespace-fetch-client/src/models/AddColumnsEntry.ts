@@ -34,11 +34,23 @@ export interface AddColumnsEntry {
      */
     name: string;
     /**
-     * SQL expression for the column (optional if virtual_column is specified)
+     * SQL expression for the column (optional if virtual_column or computed
+     * is specified). Evaluated once over existing rows; nothing is stored,
+     * so rows appended later read null.
      * @type {string}
      * @memberof AddColumnsEntry
      */
     expression?: string | null;
+    /**
+     * SQL expression declaring a maintained computed column (optional if
+     * expression or virtual_column is specified). The column is added
+     * all-null with the expression persisted as its binding in field
+     * metadata; its type and input columns are inferred from the
+     * expression. Rows are filled by backfill, never at declaration.
+     * @type {string}
+     * @memberof AddColumnsEntry
+     */
+    computed?: string | null;
     /**
      * 
      * @type {AddVirtualColumnEntry}
@@ -67,6 +79,7 @@ export function AddColumnsEntryFromJSONTyped(json: any, ignoreDiscriminator: boo
         
         'name': json['name'],
         'expression': json['expression'] == null ? undefined : json['expression'],
+        'computed': json['computed'] == null ? undefined : json['computed'],
         'virtual_column': json['virtual_column'] == null ? undefined : AddVirtualColumnEntryFromJSON(json['virtual_column']),
     };
 }
@@ -84,6 +97,7 @@ export function AddColumnsEntryToJSONTyped(value?: AddColumnsEntry | null, ignor
         
         'name': value['name'],
         'expression': value['expression'],
+        'computed': value['computed'],
         'virtual_column': AddVirtualColumnEntryToJSON(value['virtual_column']),
     };
 }

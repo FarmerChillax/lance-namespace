@@ -92,6 +92,54 @@ export interface CreateTableIndexRequest {
      */
     distance_type?: string;
     /**
+     * Optional vector index parameter for the number of IVF partitions. Applies to all IVF index types.
+     * @type {number}
+     * @memberof CreateTableIndexRequest
+     */
+    num_partitions?: number;
+    /**
+     * Optional vector index parameter for the number of PQ sub-vectors. Applies to IVF_PQ only.
+     * @type {number}
+     * @memberof CreateTableIndexRequest
+     */
+    num_sub_vectors?: number;
+    /**
+     * Optional vector index parameter for the number of bits used by the quantizer.
+     * @type {number}
+     * @memberof CreateTableIndexRequest
+     */
+    num_bits?: number;
+    /**
+     * Optional vector index parameter for the per-partition sample rate used during IVF training.
+     * @type {number}
+     * @memberof CreateTableIndexRequest
+     */
+    sample_rate?: number;
+    /**
+     * Optional vector index parameter for the maximum number of IVF k-means training iterations.
+     * @type {number}
+     * @memberof CreateTableIndexRequest
+     */
+    max_iterations?: number;
+    /**
+     * Optional vector index parameter for the target partition size. Alternative to num_partitions.
+     * @type {number}
+     * @memberof CreateTableIndexRequest
+     */
+    target_partition_size?: number;
+    /**
+     * Optional vector index parameter for the number of edges per node in the HNSW graph. Applies to HNSW index types.
+     * @type {number}
+     * @memberof CreateTableIndexRequest
+     */
+    m?: number;
+    /**
+     * Optional vector index parameter for the number of candidates evaluated during HNSW graph construction. Applies to HNSW index types.
+     * @type {number}
+     * @memberof CreateTableIndexRequest
+     */
+    ef_construction?: number;
+    /**
      * Optional FTS parameter for position tracking
      * @type {boolean}
      * @memberof CreateTableIndexRequest
@@ -168,6 +216,14 @@ export function CreateTableIndexRequestFromJSONTyped(json: any, ignoreDiscrimina
         'index_type': json['index_type'],
         'name': json['name'] == null ? undefined : json['name'],
         'distance_type': json['distance_type'] == null ? undefined : json['distance_type'],
+        'num_partitions': json['num_partitions'] == null ? undefined : json['num_partitions'],
+        'num_sub_vectors': json['num_sub_vectors'] == null ? undefined : json['num_sub_vectors'],
+        'num_bits': json['num_bits'] == null ? undefined : json['num_bits'],
+        'sample_rate': json['sample_rate'] == null ? undefined : json['sample_rate'],
+        'max_iterations': json['max_iterations'] == null ? undefined : json['max_iterations'],
+        'target_partition_size': json['target_partition_size'] == null ? undefined : json['target_partition_size'],
+        'm': json['m'] == null ? undefined : json['m'],
+        'ef_construction': json['ef_construction'] == null ? undefined : json['ef_construction'],
         'with_position': json['with_position'] == null ? undefined : json['with_position'],
         'base_tokenizer': json['base_tokenizer'] == null ? undefined : json['base_tokenizer'],
         'language': json['language'] == null ? undefined : json['language'],
@@ -198,6 +254,14 @@ export function CreateTableIndexRequestToJSONTyped(value?: CreateTableIndexReque
         'index_type': value['index_type'],
         'name': value['name'],
         'distance_type': value['distance_type'],
+        'num_partitions': value['num_partitions'],
+        'num_sub_vectors': value['num_sub_vectors'],
+        'num_bits': value['num_bits'],
+        'sample_rate': value['sample_rate'],
+        'max_iterations': value['max_iterations'],
+        'target_partition_size': value['target_partition_size'],
+        'm': value['m'],
+        'ef_construction': value['ef_construction'],
         'with_position': value['with_position'],
         'base_tokenizer': value['base_tokenizer'],
         'language': value['language'],

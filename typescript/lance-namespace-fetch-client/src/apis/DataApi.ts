@@ -140,7 +140,7 @@ export interface InsertIntoTableRequest {
 
 export interface MergeInsertIntoTableRequest {
     id: string;
-    on: string;
+    on: Array<string>;
     body: Blob;
     delimiter?: string;
     branch?: string;
@@ -243,7 +243,7 @@ export class DataApi extends runtime.BaseAPI {
     }
 
     /**
-     * Trigger an asynchronous backfill job for a computed column on table `id`. The column must be a virtual (UDF-backed) column. Returns a job ID for tracking. 
+     * Trigger an asynchronous backfill job for a computed column on table `id`. The column must be a virtual (UDF-backed) column or a computed column declared with an expression binding. Returns a job ID for tracking. 
      * Trigger an async column backfill job
      */
     async alterTableBackfillColumnsRaw(requestParameters: AlterTableBackfillColumnsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AlterTableBackfillColumnsResponse>> {
@@ -300,7 +300,7 @@ export class DataApi extends runtime.BaseAPI {
     }
 
     /**
-     * Trigger an asynchronous backfill job for a computed column on table `id`. The column must be a virtual (UDF-backed) column. Returns a job ID for tracking. 
+     * Trigger an asynchronous backfill job for a computed column on table `id`. The column must be a virtual (UDF-backed) column or a computed column declared with an expression binding. Returns a job ID for tracking. 
      * Trigger an async column backfill job
      */
     async alterTableBackfillColumns(requestParameters: AlterTableBackfillColumnsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AlterTableBackfillColumnsResponse> {
@@ -803,7 +803,7 @@ export class DataApi extends runtime.BaseAPI {
     }
 
     /**
-     * Performs a merge insert (upsert) operation on table `id`. This operation updates existing rows based on a matching column and inserts new rows that don\'t match. It returns the number of rows inserted and updated.  For tables that have been declared but not yet created on storage (is_only_declared=true), this operation will create the table with the provided data (since there are no existing rows to merge with).  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `MergeInsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `on`: pass through query parameter of the same name - `when_matched_update_all`: pass through query parameter of the same name - `when_matched_update_all_filt`: pass through query parameter of the same name - `when_not_matched_insert_all`: pass through query parameter of the same name - `when_not_matched_by_source_delete`: pass through query parameter of the same name - `when_not_matched_by_source_delete_filt`: pass through query parameter of the same name 
+     * Performs a merge insert (upsert) operation on table `id`. This operation updates existing rows based on one or more matching columns and inserts new rows that don\'t match. It returns the number of rows inserted and updated.  For tables that have been declared but not yet created on storage (is_only_declared=true), this operation will create the table with the provided data (since there are no existing rows to merge with).  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `MergeInsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `on`: pass through query parameter of the same name, repeated once per field path - `when_matched_update_all`: pass through query parameter of the same name - `when_matched_update_all_filt`: pass through query parameter of the same name - `when_not_matched_insert_all`: pass through query parameter of the same name - `when_not_matched_by_source_delete`: pass through query parameter of the same name - `when_not_matched_by_source_delete_filt`: pass through query parameter of the same name 
      * Merge insert (upsert) records into a table
      */
     async mergeInsertIntoTableRaw(requestParameters: MergeInsertIntoTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MergeInsertIntoTableResponse>> {
@@ -903,7 +903,7 @@ export class DataApi extends runtime.BaseAPI {
     }
 
     /**
-     * Performs a merge insert (upsert) operation on table `id`. This operation updates existing rows based on a matching column and inserts new rows that don\'t match. It returns the number of rows inserted and updated.  For tables that have been declared but not yet created on storage (is_only_declared=true), this operation will create the table with the provided data (since there are no existing rows to merge with).  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `MergeInsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `on`: pass through query parameter of the same name - `when_matched_update_all`: pass through query parameter of the same name - `when_matched_update_all_filt`: pass through query parameter of the same name - `when_not_matched_insert_all`: pass through query parameter of the same name - `when_not_matched_by_source_delete`: pass through query parameter of the same name - `when_not_matched_by_source_delete_filt`: pass through query parameter of the same name 
+     * Performs a merge insert (upsert) operation on table `id`. This operation updates existing rows based on one or more matching columns and inserts new rows that don\'t match. It returns the number of rows inserted and updated.  For tables that have been declared but not yet created on storage (is_only_declared=true), this operation will create the table with the provided data (since there are no existing rows to merge with).  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `MergeInsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `on`: pass through query parameter of the same name, repeated once per field path - `when_matched_update_all`: pass through query parameter of the same name - `when_matched_update_all_filt`: pass through query parameter of the same name - `when_not_matched_insert_all`: pass through query parameter of the same name - `when_not_matched_by_source_delete`: pass through query parameter of the same name - `when_not_matched_by_source_delete_filt`: pass through query parameter of the same name 
      * Merge insert (upsert) records into a table
      */
     async mergeInsertIntoTable(requestParameters: MergeInsertIntoTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MergeInsertIntoTableResponse> {

@@ -144,7 +144,19 @@ export interface AnalyzeTableQueryPlanRequest {
      */
     lower_bound?: number;
     /**
-     * Number of probes for IVF index
+     * Maximum number of IVF partitions to search. When omitted, all partitions may be searched if needed.
+     * @type {number}
+     * @memberof AnalyzeTableQueryPlanRequest
+     */
+    maximum_nprobes?: number;
+    /**
+     * Minimum number of IVF partitions to search before adaptive expansion.
+     * @type {number}
+     * @memberof AnalyzeTableQueryPlanRequest
+     */
+    minimum_nprobes?: number;
+    /**
+     * Legacy exact number of IVF partitions to search. Ignored when minimum_nprobes or maximum_nprobes is provided.
      * @type {number}
      * @memberof AnalyzeTableQueryPlanRequest
      */
@@ -231,6 +243,8 @@ export function AnalyzeTableQueryPlanRequestFromJSONTyped(json: any, ignoreDiscr
         'full_text_query': json['full_text_query'] == null ? undefined : QueryTableRequestFullTextQueryFromJSON(json['full_text_query']),
         'k': json['k'],
         'lower_bound': json['lower_bound'] == null ? undefined : json['lower_bound'],
+        'maximum_nprobes': json['maximum_nprobes'] == null ? undefined : json['maximum_nprobes'],
+        'minimum_nprobes': json['minimum_nprobes'] == null ? undefined : json['minimum_nprobes'],
         'nprobes': json['nprobes'] == null ? undefined : json['nprobes'],
         'offset': json['offset'] == null ? undefined : json['offset'],
         'prefilter': json['prefilter'] == null ? undefined : json['prefilter'],
@@ -267,6 +281,8 @@ export function AnalyzeTableQueryPlanRequestToJSONTyped(value?: AnalyzeTableQuer
         'full_text_query': QueryTableRequestFullTextQueryToJSON(value['full_text_query']),
         'k': value['k'],
         'lower_bound': value['lower_bound'],
+        'maximum_nprobes': value['maximum_nprobes'],
+        'minimum_nprobes': value['minimum_nprobes'],
         'nprobes': value['nprobes'],
         'offset': value['offset'],
         'prefilter': value['prefilter'],

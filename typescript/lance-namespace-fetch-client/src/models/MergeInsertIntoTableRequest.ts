@@ -69,11 +69,11 @@ export interface MergeInsertIntoTableRequest {
      */
     branch?: string;
     /**
-     * Lance field path to use for matching rows. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments. Use canonical full paths for display and errors; leaf names alone only identify top-level fields; invalid or unresolved paths should return InvalidInput or TableColumnNotFound.
-     * @type {string}
+     * Lance field paths to use for matching rows. Multiple fields form a composite match key; a row matches only when every listed field is equal. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments. Use canonical full paths for display and errors; leaf names alone only identify top-level fields; invalid or unresolved paths should return InvalidInput or TableColumnNotFound.
+     * @type {Array<string>}
      * @memberof MergeInsertIntoTableRequest
      */
-    on?: string;
+    on?: Array<string>;
     /**
      * Update all columns when rows match
      * @type {boolean}

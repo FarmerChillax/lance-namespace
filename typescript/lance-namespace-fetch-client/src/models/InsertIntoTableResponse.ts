@@ -46,6 +46,18 @@ export interface InsertIntoTableResponse {
      * @memberof InsertIntoTableResponse
      */
     transaction_id?: string;
+    /**
+     * Number of rows inserted
+     * @type {number}
+     * @memberof InsertIntoTableResponse
+     */
+    num_inserted_rows?: number;
+    /**
+     * The commit version associated with the operation
+     * @type {number}
+     * @memberof InsertIntoTableResponse
+     */
+    version?: number;
 }
 
 /**
@@ -67,6 +79,8 @@ export function InsertIntoTableResponseFromJSONTyped(json: any, ignoreDiscrimina
         
         'context': json['context'] == null ? undefined : json['context'],
         'transaction_id': json['transaction_id'] == null ? undefined : json['transaction_id'],
+        'num_inserted_rows': json['num_inserted_rows'] == null ? undefined : json['num_inserted_rows'],
+        'version': json['version'] == null ? undefined : json['version'],
     };
 }
 
@@ -83,6 +97,8 @@ export function InsertIntoTableResponseToJSONTyped(value?: InsertIntoTableRespon
         
         'context': value['context'],
         'transaction_id': value['transaction_id'],
+        'num_inserted_rows': value['num_inserted_rows'],
+        'version': value['version'],
     };
 }
 
